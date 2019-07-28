@@ -6,13 +6,14 @@ axios.interceptors.response.use(null, error => {
 
   if (!expectedError) {
     // log error and notify user
+    console.error('Unexpected http request error:');
     console.dir(error);
   }
 
   return Promise.reject(error);
 });
 
-function setToken(token) {
+function setAuthKey(token) {
   axios.defaults.headers.common['Authorization'] = token;
 }
 
@@ -21,5 +22,5 @@ export default {
   post: axios.post,
   put: axios.put,
   delete: axios.delete,
-  setToken
+  setAuthKey
 };
