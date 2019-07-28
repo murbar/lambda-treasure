@@ -5,6 +5,7 @@ import { ReactComponent as Heart } from 'images/icons/heart.svg';
 const StyledDiv = styled.div`
   padding: 2rem 0;
   text-align: center;
+  font-size: 0.9em;
   svg {
     height: 1em;
     color: ${p => p.theme.colors.primary};
