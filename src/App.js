@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import useLocalStorageState from 'hooks/useLocalStorageState';
 import Header from 'components/Header';
+import Map from 'components/Map';
 import HUD from 'components/HUD';
 import Controls from 'components/Controls';
 import Settings from 'components/Settings';
 import Footer from 'components/Footer';
 import useHotKeys from 'hooks/useHotkeys';
-import httpService from 'services/httpService';
-import gameService from 'services/gameService';
+import useGameService from 'hooks/useGameService';
+
+const parseCoordinates = coords => {
+  return coords.slice(1, coords.length - 1).split(',');
+};
 
 const ErrorMessage = styled.div`
   background: crimson;
@@ -15,10 +20,21 @@ const ErrorMessage = styled.div`
   padding: 2rem;
 `;
 
-    mapData: null,
-    apiKey: null
-  });
+const initState = {
+  currentRoom: { id: null },
+  coolDown: 0,
+  mapData: null,
+  apiKey: null
+};
+
+function App() {
+  const [gameState, setGameState] = useLocalStorageState('gameState', initState);
   const [showSettings, setShowSettings] = useState(false);
+  const { roomData, isLoading, apiError, checkIn, move } = useGameService(gameState.apiKey);
+
+  const moveDirection = direction => {
+    console.log('moving', direction);
+  };
 
   const setApiKey = apiKey => {
     setGameState(prev => ({
@@ -32,18 +48,44 @@ const ErrorMessage = styled.div`
   };
 
   useEffect(() => {
-    httpService.setToken(gameState.apiKey);
-  }, [gameState.apiKey]);
+    if (gameState.coolDown > 0) {
+      let id = setInterval(() => {
+        setGameState(prev => ({
+          ...prev,
+          coolDown: Math.ceil((prev.coolDown -= 1))
+        }));
+      }, 1000);
+      return () => clearInterval(id);
+    }
+  }, [gameState.coolDown, setGameState]);
 
   useEffect(() => {
-    const initGame = async () => {
-      if (gameState.apiKey) {
-        const data = await gameService.checkIn();
-        console.log(data);
-      }
-    };
-    initGame();
-  }, [gameState]);
+    if (roomData) {
+      const [x, y] = parseCoordinates(roomData.coordinates);
+      setGameState(prev => ({
+        ...prev,
+        currentRoom: {
+          id: roomData.room_id,
+          title: roomData.title,
+          description: roomData.description,
+          exits: roomData.exits,
+          coordinates: { x, y },
+          errors: roomData.errors,
+          messages: roomData.messages
+        },
+        coolDown: Math.ceil(roomData.cooldown)
+      }));
+    }
+  }, [roomData, setGameState]);
+
+  useEffect(() => {
+    if (apiError && apiError.cooldown) {
+      setGameState(prev => ({
+        ...prev,
+        coolDown: Math.ceil(apiError.cooldown)
+      }));
+    }
+  }, [apiError, setGameState]);
 
   useHotKeys({
     F13: () => console.log(gameState),
