@@ -7,7 +7,7 @@ const StyledDiv = styled.div`
   text-align: center;
   svg {
     height: 1em;
-    color: crimson;
+    color: ${p => p.theme.colors.primary};
     margin: 0 -0.25rem;
   }
 `;
