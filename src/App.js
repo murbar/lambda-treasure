@@ -9,18 +9,12 @@ import useHotKeys from 'hooks/useHotkeys';
 import httpService from 'services/httpService';
 import gameService from 'services/gameService';
 
-function App() {
-  const [gameState, setGameState] = useLocalStorageState('gameState', {
-    current_room_id: {
-      id: null,
-      title: '',
-      description: '',
-      exits: [],
-      messages: [],
-      errors: []
-    },
-    cooldown: null,
-    cooldownStart: null,
+const ErrorMessage = styled.div`
+  background: crimson;
+  color: white;
+  padding: 2rem;
+`;
+
     mapData: null,
     apiKey: null
   });
@@ -64,8 +58,11 @@ function App() {
     <div>
       <Header />
       <HUD gameState={gameState} />
+      <Map />
+      {isLoading && <div>LOADING</div>}
+      {apiError && <ErrorMessage>ERROR {JSON.stringify(apiError)}</ErrorMessage>}
       <Controls gameState={gameState} callbacks={{ moveDirection }} />
-      {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey }} />}
+      {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />}
       <Footer />
     </div>
   );
