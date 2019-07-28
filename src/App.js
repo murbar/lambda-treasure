@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import useLocalStorageState from 'hooks/useLocalStorageState';
 import Header from 'components/Header';
+import HUD from 'components/HUD';
 import Controls from 'components/Controls';
 import Settings from 'components/Settings';
 import Footer from 'components/Footer';
@@ -62,6 +63,7 @@ function App() {
   return (
     <div>
       <Header />
+      <HUD gameState={gameState} />
       <Controls gameState={gameState} callbacks={{ moveDirection }} />
       {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey }} />}
       <Footer />
