@@ -4,8 +4,9 @@ import styled from 'styled-components';
 const Styles = styled.header`
   text-align: center;
   h1 {
-    margin: 2rem 0;
+    margin: 1rem 0;
     line-height: 1;
+    font-size: 1.4em;
   }
 `;
 
