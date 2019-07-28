@@ -7,9 +7,9 @@ const colors = {
   orange: 'hsl(18, 84%, 44%)'
 };
 
-const addAlpha = (hsl, alpha) => {
-  return `${hsl.slice(0, -1)}, ${alpha})`;
-};
+// const addAlpha = (hsl, alpha) => {
+//   return `${hsl.slice(0, -1)}, ${alpha})`;
+// };
 
 const theme = {
   colors: {
