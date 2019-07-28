@@ -1,11 +1,12 @@
 import React from 'react';
+import Header from 'components/Header';
+import Footer from 'components/Footer';
 
 function App() {
   return (
     <div>
-      <header>
-        <h1>Lambda Treasure Hunt</h1>
-      </header>
+      <Header />
+      <Footer />
     </div>
   );
 }
