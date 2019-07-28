@@ -76,6 +76,7 @@ export default function Settings({ gameState, callbacks }) {
         />
       </FormField>
       <Button onClick={save}>Save</Button>
+      <Button onClick={callbacks.resetGame}>Reset Game</Button>
     </Styles>
   );
 }

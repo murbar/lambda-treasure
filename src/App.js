@@ -32,8 +32,8 @@ function App() {
     }));
   };
 
-  const moveDirection = direction => {
-    console.log('moving', direction);
+  const resetGame = () => {
+    setGameState(initState);
   };
 
   useEffect(() => {
