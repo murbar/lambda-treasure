@@ -20,15 +20,28 @@ const Directions = styled.div`
   }
 `;
 
-export default function Controls() {
+export default function Controls({ gameState, callbacks }) {
+  const exits = gameState.currentRoom.id ? gameState.currentRoom.exits : null;
+  const { move } = callbacks;
+
   return (
     <Styles>
-      <Directions>
-        <button>N</button>
-        <button>W</button>
-        <button>E</button>
-        <button>S</button>
-      </Directions>
+      {exits && (
+        <Directions>
+          <button disabled={!exits.includes('n')} onClick={() => move('n')}>
+            N
+          </button>
+          <button disabled={!exits.includes('w')} onClick={() => move('w')}>
+            W
+          </button>
+          <button disabled={!exits.includes('e')} onClick={() => move('e')}>
+            E
+          </button>
+          <button disabled={!exits.includes('s')} onClick={() => move('s')}>
+            S
+          </button>
+        </Directions>
+      )}
     </Styles>
   );
 }

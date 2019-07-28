@@ -32,10 +32,6 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const { roomData, isLoading, apiError, checkIn, move } = useGameService(gameState.apiKey);
 
-  const moveDirection = direction => {
-    console.log('moving', direction);
-  };
-
   const setApiKey = apiKey => {
     setGameState(prev => ({
       ...prev,
@@ -89,10 +85,10 @@ function App() {
 
   useHotKeys({
     F13: () => console.log(gameState),
-    n: () => moveDirection('n'),
-    e: () => moveDirection('e'),
-    s: () => moveDirection('s'),
-    w: () => moveDirection('w'),
+    n: () => move('n'),
+    e: () => move('e'),
+    s: () => move('s'),
+    w: () => move('w'),
     z: () => setShowSettings(prev => !prev)
   });
 
@@ -103,7 +99,7 @@ function App() {
       <Map />
       {isLoading && <div>LOADING</div>}
       {apiError && <ErrorMessage>ERROR {JSON.stringify(apiError)}</ErrorMessage>}
-      <Controls gameState={gameState} callbacks={{ moveDirection }} />
+      <Controls gameState={gameState} callbacks={{ move }} />
       {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />}
       <Footer />
     </div>
