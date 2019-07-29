@@ -22,7 +22,8 @@ const Styles = styled.div`
 `;
 
 export default function HUD({ gameState }) {
-  const { id, description, title, exits, messages, errors } = gameState.currentRoom;
+  const { messages, errors, cooldown } = gameState.serverData;
+  const { id, description, title, exits } = gameState.serverData.room;
   return (
     <Styles>
       <div className="room">#{id}</div>
@@ -43,7 +44,7 @@ export default function HUD({ gameState }) {
           ))}
         </div>
       )}
-      {gameState.coolDown > 0 && <div className="cool-down">CoolDown {gameState.coolDown}</div>}
+      {cooldown > 0 && <div className="cool-down">Cooldown {cooldown}</div>}
     </Styles>
   );
 }

@@ -21,16 +21,16 @@ const ErrorMessage = styled.div`
 `;
 
 const initState = {
-  currentRoom: { id: null },
-  coolDown: 0,
+  apiKey: null,
   mapData: null,
-  apiKey: null
+  serverData: null,
+  apiError: null
 };
 
 function App() {
-  const [gameState, setGameState] = useLocalStorageState('gameState', initState);
+  const [gameState, setGameState] = useLocalStorageState('GAME_STATE', initState);
+  const { gameData, isLoading, apiError, actions } = useGameService(gameState.apiKey);
   const [showSettings, setShowSettings] = useState(false);
-  const { roomData, isLoading, apiError, checkIn, move } = useGameService(gameState.apiKey);
 
   const setApiKey = apiKey => {
     setGameState(prev => ({
@@ -44,8 +44,8 @@ function App() {
   };
 
   const travel = direction => {
-    if (!gameState.coolDown) {
-      move(direction);
+    if (!gameData.room.coolDown) {
+      actions.move(direction);
     } else {
       setGameState(prev => {
         const messages = [...prev.currentRoom.messages];
@@ -62,62 +62,60 @@ function App() {
   };
 
   useEffect(() => {
-    if (gameState.coolDown > 0) {
+    if (gameState.serverData && gameState.serverData.cooldown > 0) {
       const timeOut = setTimeout(() => {
         setGameState(prev => ({
           ...prev,
-          coolDown: Math.ceil((prev.coolDown -= 1))
+          serverData: {
+            ...prev.serverData,
+            cooldown: Math.ceil((prev.serverData.cooldown -= 1))
+          }
         }));
       }, 1000);
       return () => clearTimeout(timeOut);
     }
-  }, [gameState.coolDown, setGameState]);
+  }, [gameState, setGameState]);
 
   useEffect(() => {
-    if (roomData) {
-      const [x, y] = parseCoordinates(roomData.coordinates);
-      setGameState(prev => ({
-        ...prev,
-        currentRoom: {
-          id: roomData.room_id,
-          title: roomData.title,
-          description: roomData.description,
-          exits: roomData.exits,
-          coordinates: { x, y },
-          errors: roomData.errors,
-          messages: roomData.messages
-        },
-        coolDown: Math.ceil(roomData.cooldown)
-      }));
-    }
-  }, [roomData, setGameState]);
+    setGameState(prev => ({
+      ...prev,
+      serverData: gameData
+    }));
+  }, [gameData, setGameState]);
 
   useEffect(() => {
     if (apiError && apiError.cooldown) {
       setGameState(prev => ({
         ...prev,
-        coolDown: Math.ceil(apiError.cooldown)
+        serverData: {
+          ...prev.serverData,
+          cooldown: Math.ceil(apiError.cooldown)
+        }
       }));
     }
   }, [apiError, setGameState]);
 
   useHotKeys({
     F13: () => console.log(gameState),
-    n: () => travel('n'),
-    e: () => travel('e'),
-    s: () => travel('s'),
-    w: () => travel('w'),
+    // n: () => travel('n'),
+    // e: () => travel('e'),
+    // s: () => travel('s'),
+    // w: () => travel('w'),
     z: () => setShowSettings(prev => !prev)
   });
 
   return (
     <div>
       <Header />
-      {gameState.currentRoom.id !== null && <HUD gameState={gameState} />}
-      <Map />
+      {gameState.serverData && (
+        <>
+          <HUD gameState={gameState} />
+          <Map />
+          <Controls gameState={gameState} callbacks={{ travel }} />
+        </>
+      )}
       {isLoading && <div>LOADING</div>}
       {apiError && <ErrorMessage>ERROR {JSON.stringify(apiError)}</ErrorMessage>}
-      <Controls gameState={gameState} callbacks={{ travel }} />
       {!gameState.apiKey && <ErrorMessage>No API key, press 'z' to show settings</ErrorMessage>}
       {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />}
       {/* <Footer /> */}

@@ -18,6 +18,7 @@ const Directions = styled.div`
     margin: 0;
     font-family: ${p => p.theme.font};
     font-size: 1.5em;
+    font-weight: bold;
     cursor: pointer;
     &:hover {
       color: ${p => p.theme.colors.primary};
@@ -37,7 +38,7 @@ const Directions = styled.div`
 `;
 
 export default function Controls({ gameState, callbacks }) {
-  const exits = gameState.currentRoom.id ? gameState.currentRoom.exits : null;
+  const exits = gameState.serverData.room.exits;
   const { travel } = callbacks;
 
   return (
