@@ -113,13 +113,13 @@ function App() {
   return (
     <div>
       <Header />
-      <HUD gameState={gameState} />
+      {gameState.currentRoom.id && <HUD gameState={gameState} />}
       <Map />
       {isLoading && <div>LOADING</div>}
       {apiError && <ErrorMessage>ERROR {JSON.stringify(apiError)}</ErrorMessage>}
       <Controls gameState={gameState} callbacks={{ travel }} />
       {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />}
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
