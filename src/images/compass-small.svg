@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="90px" height="90px" viewBox="0 0 90 90" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>compass-small</title>
+    <desc>Created with Sketch.</desc>
+    <g id="compass-small" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="cross" fill="#CB4015">
+            <g id="Group" transform="translate(41.400000, 0.000000)">
+                <polygon id="Path" fill-opacity="0.5" points="3.6 2.13162821e-14 3.6 45 7.2 41.4"></polygon>
+                <polygon id="Path-Copy" fill-opacity="0.2" transform="translate(1.800000, 22.500000) scale(-1, 1) translate(-1.800000, -22.500000) " points="-2.5845992e-13 2.13162821e-14 -2.58434695e-13 45 3.6 41.4"></polygon>
+            </g>
+            <g id="Group-Copy" transform="translate(67.500000, 45.000000) rotate(-270.000000) translate(-67.500000, -45.000000) translate(63.900000, 22.500000)">
+                <polygon id="Path" fill-opacity="0.5" points="3.6 -4.79616347e-13 3.6 45 7.2 41.4"></polygon>
+                <polygon id="Path-Copy" fill-opacity="0.2" transform="translate(1.800000, 22.500000) scale(-1, 1) translate(-1.800000, -22.500000) " points="-5.24380539e-13 -5.59552404e-13 -5.24355314e-13 45 3.6 41.4"></polygon>
+            </g>
+            <g id="Group-Copy-2" transform="translate(45.000000, 67.500000) rotate(-180.000000) translate(-45.000000, -67.500000) translate(41.400000, 45.000000)">
+                <polygon id="Path" fill-opacity="0.5" points="3.6 1.41220369e-13 3.6 45 7.2 41.4"></polygon>
+                <polygon id="Path-Copy" fill-opacity="0.2" transform="translate(1.800000, 22.500000) scale(-1, 1) translate(-1.800000, -22.500000) " points="-1.13384857e-12 2.21156427e-13 -1.13382335e-12 45 3.6 41.4"></polygon>
+            </g>
+            <g id="Group-Copy-3" transform="translate(22.500000, 45.000000) rotate(-90.000000) translate(-22.500000, -45.000000) translate(18.900000, 22.500000)">
+                <polygon id="Path" fill-opacity="0.5" points="3.6 2.13162821e-14 3.6 45 7.2 41.4"></polygon>
+                <polygon id="Path-Copy" fill-opacity="0.2" transform="translate(1.800000, 22.500000) scale(-1, 1) translate(-1.800000, -22.500000) " points="-2.98250313e-13 2.13162821e-14 -2.98225088e-13 45 3.6 41.4"></polygon>
+            </g>
+        </g>
+        <g id="cross-copy" transform="translate(45.000000, 45.000000) rotate(-45.000000) translate(-45.000000, -45.000000) translate(15.000000, 15.000000)" fill="#CB4015">
+            <g id="Group" transform="translate(27.600000, 0.000000)">
+                <polygon id="Path" fill-opacity="0.5" points="2.4 2.13162821e-14 2.4 30 4.8 27.6"></polygon>
+                <polygon id="Path-Copy" fill-opacity="0.2" transform="translate(1.200000, 15.000000) scale(-1, 1) translate(-1.200000, -15.000000) " points="-2.5845992e-13 2.13162821e-14 -2.58443103e-13 30 2.4 27.6"></polygon>
+            </g>
+            <g id="Group-Copy" transform="translate(45.000000, 30.000000) rotate(-270.000000) translate(-45.000000, -30.000000) translate(42.600000, 15.000000)">
+                <polygon id="Path" fill-opacity="0.5" points="2.4 -3.19744231e-13 2.4 30 4.8 27.6"></polygon>
+                <polygon id="Path-Copy" fill-opacity="0.2" transform="translate(1.200000, 15.000000) scale(-1, 1) translate(-1.200000, -15.000000) " points="-5.20117283e-13 -3.73034936e-13 -5.20100466e-13 30 2.4 27.6"></polygon>
+            </g>
+            <g id="Group-Copy-2" transform="translate(30.000000, 45.000000) rotate(-180.000000) translate(-30.000000, -45.000000) translate(27.600000, 30.000000)">
+                <polygon id="Path" fill-opacity="0.5" points="2.4 1.0125234e-13 2.4 30 4.8 27.6"></polygon>
+                <polygon id="Path-Copy" fill-opacity="0.2" transform="translate(1.200000, 15.000000) scale(-1, 1) translate(-1.200000, -15.000000) " points="-1.03153042e-12 1.54543045e-13 -1.0315136e-12 30 2.4 27.6"></polygon>
+            </g>
+            <g id="Group-Copy-3" transform="translate(15.000000, 30.000000) rotate(-90.000000) translate(-15.000000, -30.000000) translate(12.600000, 15.000000)">
+                <polygon id="Path" fill-opacity="0.5" points="2.4 2.13162821e-14 2.4 30 4.8 27.6"></polygon>
+                <polygon id="Path-Copy" fill-opacity="0.2" transform="translate(1.200000, 15.000000) scale(-1, 1) translate(-1.200000, -15.000000) " points="-2.47091236e-13 2.13162821e-14 -2.4707442e-13 30 2.4 27.6"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>
