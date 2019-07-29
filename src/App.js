@@ -118,6 +118,7 @@ function App() {
       {isLoading && <div>LOADING</div>}
       {apiError && <ErrorMessage>ERROR {JSON.stringify(apiError)}</ErrorMessage>}
       <Controls gameState={gameState} callbacks={{ travel }} />
+      {!gameState.apiKey && <ErrorMessage>No API key, press 'z' to show settings</ErrorMessage>}
       {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />}
       {/* <Footer /> */}
     </div>

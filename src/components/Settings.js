@@ -64,6 +64,7 @@ export default function Settings({ gameState, callbacks }) {
   return (
     <Styles>
       <h2>Settings</h2>
+      <p>Press 'z' to hide settings</p>
       <FormField>
         <label htmlFor="api-key">API Key</label>
         <Input
