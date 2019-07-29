@@ -8,7 +8,7 @@ const Styles = styled.div`
   line-height: 1.3;
   .room,
   .cool-down {
-    font-family: ${p => p.theme.headingFontFamily};
+    font-family: ${p => p.theme.headingFont};
   }
   .title {
     font-size: 1.25em;
@@ -31,15 +31,15 @@ export default function HUD({ gameState }) {
       <div className="exits">Exits: {exits.map(e => e.toUpperCase()).join(', ')}</div>
       {errors && (
         <div className="errors">
-          {errors.map(e => (
-            <div>{e}</div>
+          {errors.map((e, i) => (
+            <div key={i}>{e}</div>
           ))}
         </div>
       )}
       {messages && (
         <div className="errors">
-          {messages.map(m => (
-            <div>{m}</div>
+          {messages.map((m, i) => (
+            <div key={i}>{m}</div>
           ))}
         </div>
       )}
