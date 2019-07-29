@@ -45,13 +45,13 @@ function App() {
 
   useEffect(() => {
     if (gameState.coolDown > 0) {
-      let id = setInterval(() => {
+      const timeOut = setTimeout(() => {
         setGameState(prev => ({
           ...prev,
           coolDown: Math.ceil((prev.coolDown -= 1))
         }));
       }, 1000);
-      return () => clearInterval(id);
+      return () => clearTimeout(timeOut);
     }
   }, [gameState.coolDown, setGameState]);
 
