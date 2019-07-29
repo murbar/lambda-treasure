@@ -10,10 +10,6 @@ import Footer from 'components/Footer';
 import useHotKeys from 'hooks/useHotkeys';
 import useGameService from 'hooks/useGameService';
 
-const parseCoordinates = coords => {
-  return coords.slice(1, coords.length - 1).split(',');
-};
-
 const ErrorMessage = styled.div`
   background: crimson;
   color: white;
@@ -44,16 +40,16 @@ function App() {
   };
 
   const travel = direction => {
-    if (!gameData.room.coolDown) {
+    if (!gameState.serverData.cooldown) {
       actions.move(direction);
     } else {
       setGameState(prev => {
-        const messages = [...prev.currentRoom.messages];
+        const messages = [...prev.serverData.messages];
         messages.push(`Cool down in effect, wait to move`);
         return {
           ...prev,
-          currentRoom: {
-            ...prev.currentRoom,
+          serverData: {
+            ...prev.serverData,
             messages
           }
         };
@@ -95,6 +91,7 @@ function App() {
     }
   }, [apiError, setGameState]);
 
+  // selectively activate hotkeys when inputs not in focus
   useHotKeys({
     F13: () => console.log(gameState),
     // n: () => travel('n'),
