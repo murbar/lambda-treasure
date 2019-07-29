@@ -36,6 +36,24 @@ const useGameService = apiKey => {
     []
   );
 
+  // get status
+
+  // pick up treasure
+
+  // drop treasure
+
+  // sell treasure
+
+  // examine
+
+  // name changer
+
+  // pray to shrine
+
+  //  fly
+
+  // dash
+
   useEffect(() => {
     httpService.setAuthKey(apiKey);
     if (apiKey) checkIn();
