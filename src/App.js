@@ -43,6 +43,24 @@ function App() {
     setGameState(initState);
   };
 
+  const travel = direction => {
+    if (!gameState.coolDown) {
+      move(direction);
+    } else {
+      setGameState(prev => {
+        const messages = [...prev.currentRoom.messages];
+        messages.push(`Cool down in effect, wait to move`);
+        return {
+          ...prev,
+          currentRoom: {
+            ...prev.currentRoom,
+            messages
+          }
+        };
+      });
+    }
+  };
+
   useEffect(() => {
     if (gameState.coolDown > 0) {
       const timeOut = setTimeout(() => {
@@ -85,10 +103,10 @@ function App() {
 
   useHotKeys({
     F13: () => console.log(gameState),
-    n: () => move('n'),
-    e: () => move('e'),
-    s: () => move('s'),
-    w: () => move('w'),
+    n: () => travel('n'),
+    e: () => travel('e'),
+    s: () => travel('s'),
+    w: () => travel('w'),
     z: () => setShowSettings(prev => !prev)
   });
 
@@ -99,7 +117,7 @@ function App() {
       <Map />
       {isLoading && <div>LOADING</div>}
       {apiError && <ErrorMessage>ERROR {JSON.stringify(apiError)}</ErrorMessage>}
-      <Controls gameState={gameState} callbacks={{ move }} />
+      <Controls gameState={gameState} callbacks={{ travel }} />
       {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />}
       <Footer />
     </div>
