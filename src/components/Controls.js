@@ -18,10 +18,12 @@ const Directions = styled.div`
     margin: 0;
     font-family: ${p => p.theme.font};
     font-size: 1.5em;
+    cursor: pointer;
     &:hover {
       color: ${p => p.theme.colors.primary};
     }
     &[disabled] {
+      cursor: default;
       color: #aaa;
     }
   }
