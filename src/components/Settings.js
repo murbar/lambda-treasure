@@ -22,7 +22,7 @@ const Input = styled.input`
   padding: 1rem;
   font-size: 1em;
   border-radius: ${p => p.theme.inputBorderRadius};
-  font-family: ${p => p.theme.fontFamily};
+  font-family: ${p => p.theme.font};
   &:focus {
     outline: none;
     background: white;
@@ -30,7 +30,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  font-family: ${p => p.theme.fontFamily};
+  font-family: ${p => p.theme.font};
   border: none;
   border-radius: ${p => p.theme.inputBorderRadius};
   font-size: 1.25em;

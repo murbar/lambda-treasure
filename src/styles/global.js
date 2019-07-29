@@ -14,14 +14,14 @@ export default createGlobalStyle`
     background: ${p => p.theme.backgroundGradient};
     font-size: 1.8rem;
     line-height: 1.7;
-    font-family: ${p => p.theme.fontFamily};
+    font-family: ${p => p.theme.font};
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: ${p => p.theme.headingFontFamily};
+    font-family: ${p => p.theme.headingFont};
     font-weight: 400;
   }
 

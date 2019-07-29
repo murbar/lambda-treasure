@@ -22,8 +22,8 @@ const theme = {
     colors.darkCream
   } 100%);`,
   inputBorderRadius: `0.5rem`,
-  fontFamily: "'Alegreya Sans', sans-serif",
-  headingFontFamily: "'Bungee', sans-serif",
+  font: "'Alegreya Sans', sans-serif",
+  headingFont: "'Bungee', sans-serif",
   media
 };
 
