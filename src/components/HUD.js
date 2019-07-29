@@ -7,7 +7,7 @@ const Styles = styled.div`
   padding: 1rem;
   line-height: 1.3;
   .room,
-  .cooldown {
+  .cool-down {
     font-family: ${p => p.theme.headingFontFamily};
   }
   .title {
@@ -16,7 +16,7 @@ const Styles = styled.div`
   .desc {
     font-style: italic;
   }
-  .cooldown {
+  .cool-down {
     color: orange;
   }
 `;
@@ -25,7 +25,7 @@ export default function HUD({ gameState }) {
   const { id, description, title, exits, messages, errors } = gameState.currentRoom;
   return (
     <Styles>
-      <div className="room">Room {id}</div>
+      <div className="room">#{id}</div>
       <div className="title">{title}</div>
       <div className="desc">{description}</div>
       <div className="exits">Exits: {exits.map(e => e.toUpperCase()).join(', ')}</div>
@@ -43,7 +43,7 @@ export default function HUD({ gameState }) {
           ))}
         </div>
       )}
-      {gameState.coolDown > 0 && <div className="cooldown">CoolDown {gameState.coolDown}</div>}
+      {gameState.coolDown > 0 && <div className="cool-down">CoolDown {gameState.coolDown}</div>}
     </Styles>
   );
 }
