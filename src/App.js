@@ -113,7 +113,7 @@ function App() {
   return (
     <div>
       <Header />
-      {gameState.currentRoom.id && <HUD gameState={gameState} />}
+      {gameState.currentRoom.id !== null && <HUD gameState={gameState} />}
       <Map />
       {isLoading && <div>LOADING</div>}
       {apiError && <ErrorMessage>ERROR {JSON.stringify(apiError)}</ErrorMessage>}
