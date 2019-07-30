@@ -16,6 +16,12 @@ const Styles = styled.div`
   .desc {
     font-style: italic;
   }
+  .items {
+    > div {
+      color: yellow;
+      font-weight: bold;
+    }
+  }
   .cool-down {
     color: orange;
   }
@@ -23,7 +29,8 @@ const Styles = styled.div`
 
 export default function HUD({ gameState }) {
   const { messages, errors, cooldown } = gameState.serverData;
-  const { id, description, title, exits, items } = gameState.serverData.room;
+  const { id, description, title, exits, items, players } = gameState.serverData.room;
+  const { gold, speed, encumbrance, strength } = gameState.serverData.player;
   return (
     <Styles>
       <div className="room">#{id}</div>
@@ -45,6 +52,14 @@ export default function HUD({ gameState }) {
           ))}
         </div>
       )}
+      {players && (
+        <div className="errors">
+          Players:
+          {players.map((m, i) => (
+            <div key={i}>{m}</div>
+          ))}
+        </div>
+      )}
       {messages && (
         <div className="errors">
           {messages.map((m, i) => (
@@ -53,6 +68,9 @@ export default function HUD({ gameState }) {
         </div>
       )}
       {cooldown > 0 && <div className="cool-down">CD {cooldown}</div>}
+      <div>
+        Gold: {gold}, Strength: {strength}, Encumbrance: {encumbrance}, Speed: {speed}
+      </div>
     </Styles>
   );
 }
