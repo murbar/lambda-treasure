@@ -59,10 +59,17 @@ function App() {
   };
 
   const move = direction => {
+    let nextRoomId = null;
+    try {
+      nextRoomId = secretMapData[gameState.serverData.room.id]['exits'][direction];
+    } catch (error) {
+      console.warn('cannot get next room ID from map data');
+    }
     checkCooldown(() => {
-      actions.move(direction);
+      actions.move(direction, nextRoomId);
     });
   };
+
   const takeItem = itemName => {
     checkCooldown(() => {
       actions.takeItem(itemName);
