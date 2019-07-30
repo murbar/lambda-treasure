@@ -126,7 +126,7 @@ function App() {
   return (
     <div>
       <Header />
-      {gameState.serverData.room.id && (
+      {gameState.serverData.room.id !== null && (
         <>
           <HUD gameState={gameState} />
           <Map mapData={secretMapData} currentRoomId={gameState.serverData.room.id} />
