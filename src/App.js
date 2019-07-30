@@ -129,8 +129,11 @@ function App() {
       {gameState.serverData.room.id !== null && (
         <>
           <HUD gameState={gameState} />
-          <Map mapData={secretMapData} currentRoomId={gameState.serverData.room.id} />
-          <Controls gameState={gameState} callbacks={{ move, takeItem, dropItem, checkStatus }} />
+          <Map
+            mapData={secretMapData}
+            currentRoomId={gameState.serverData.room.id}
+            highlightRoomId={461}
+          />
         </>
       )}
       {isLoading && <div>LOADING</div>}
