@@ -136,7 +136,7 @@ const useGameService = apiKey => {
 
   const move = useCallback(
     requestWrapper(async (direction, nextRoomId = null) => {
-      const { data } = await gameService.move(direction);
+      const { data } = await gameService.move(direction, nextRoomId);
       updateRoomState(data);
     }),
     []
@@ -153,6 +153,14 @@ const useGameService = apiKey => {
   const dropItem = useCallback(
     requestWrapper(async itemName => {
       const { data } = await gameService.dropItem(itemName);
+      updateRoomState(data);
+    }),
+    []
+  );
+
+  const sellItem = useCallback(
+    requestWrapper(async itemName => {
+      const { data } = await gameService.sellItem(itemName, true);
       updateRoomState(data);
     }),
     []
@@ -188,7 +196,8 @@ const useGameService = apiKey => {
       checkIn,
       move,
       takeItem,
-      dropItem
+      dropItem,
+      sellItem
     }
   };
 };
