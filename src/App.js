@@ -80,6 +80,13 @@ function App() {
       actions.dropItem(itemName);
     });
   };
+
+  const sellItem = itemName => {
+    checkCooldown(() => {
+      actions.sellItem(itemName);
+    });
+  };
+
   const checkStatus = () => {
     checkCooldown(() => {
       actions.checkPlayerStatus();
