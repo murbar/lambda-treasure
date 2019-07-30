@@ -104,10 +104,16 @@ function App() {
   return (
     <div>
       <Header />
-      {gameState.serverData && (
+      {gameState.serverData.room.id && (
         <>
           <HUD gameState={gameState} />
-          <Controls gameState={gameState} callbacks={{ travel, take: actions.takeItem }} />
+          {/* <Map graph={secretMapData} /> */}
+          <Controls gameState={gameState} callbacks={{ 
+            travel,
+            takeItem: actions.takeItem,
+            dropItem: actions.dropItem,
+            checkStatus: actions.checkPlayerStatus
+          }} />
         </>
       )}
       {isLoading && <div>LOADING</div>}

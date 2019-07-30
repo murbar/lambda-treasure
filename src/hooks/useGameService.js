@@ -150,6 +150,14 @@ const useGameService = apiKey => {
     []
   );
 
+  const dropItem = useCallback(
+    requestWrapper(async itemName => {
+      const { data } = await gameService.dropItem(itemName);
+      updateRoomState(data);
+    }),
+    []
+  );
+
   // pick up treasure
 
   // drop treasure
@@ -179,7 +187,8 @@ const useGameService = apiKey => {
       checkPlayerStatus,
       checkIn,
       move,
-      takeItem
+      takeItem,
+      dropItem
     }
   };
 };

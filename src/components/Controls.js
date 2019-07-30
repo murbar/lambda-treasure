@@ -41,7 +41,8 @@ const Directions = styled.div`
 
 export default function Controls({ gameState, callbacks }) {
   const { exits, items } = gameState.serverData.room;
-  const { travel } = callbacks;
+  const { inventory } = gameState.serverData.player;
+  const { travel, takeItem, dropItem, checkStatus } = callbacks;
 
   return (
     <Styles>
@@ -63,10 +64,21 @@ export default function Controls({ gameState, callbacks }) {
       )}
       {items &&
         items.map((item, key) => (
-          <Button key={key} onClick={() => callbacks.take(item)}>
+          <Button key={key} onClick={() => takeItem(item)}>
             Pick up {item}
           </Button>
         ))}
+      {inventory && (
+        <div>
+          <h2>Inventory</h2>
+          {inventory.map((item, key) => (
+            <Button key={key} onClick={() => dropItem(item)}>
+              Drop {item}
+            </Button>
+          ))}
+        </div>
+      )}
+      <Button onClick={checkStatus}>Get status</Button>
     </Styles>
   );
 }
