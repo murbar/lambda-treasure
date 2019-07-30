@@ -64,9 +64,7 @@ export default function Controls({ gameState, callbacks, isLoading }) {
 
     const nextInQueue = () => {
       if (queueTimer.current === null) {
-        console.log(`next called with ${cd}, not timer running, starting..`);
         queueTimer.current = setTimeout(() => {
-          console.log('moving');
           move(moveQueue.dequeue());
           queueTimer.current = null;
         }, cd + 100);
