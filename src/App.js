@@ -116,10 +116,10 @@ function App() {
   // selectively activate hotkeys when inputs not in focus
   useHotKeys({
     F13: () => console.log(gameState),
-    // n: () => travel('n'),
-    // e: () => travel('e'),
-    // s: () => travel('s'),
-    // w: () => travel('w'),
+    ArrowUp: () => move('n'),
+    ArrowRight: () => move('e'),
+    ArrowDown: () => move('s'),
+    ArrowLeft: () => move('w'),
     z: () => setShowSettings(prev => !prev)
   });
 
