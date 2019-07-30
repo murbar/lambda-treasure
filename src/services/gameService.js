@@ -12,7 +12,7 @@ const checkIn = () => {
 
 const move = (direction, nextRoomId = null) => {
   const payload = { direction };
-  if (nextRoomId) payload['next_room_id'] = nextRoomId;
+  if (nextRoomId) payload['next_room_id'] = nextRoomId.toString();
   return http.post(API_URL + 'move', payload);
 };
 
