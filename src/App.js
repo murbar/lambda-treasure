@@ -39,13 +39,13 @@ function App() {
     setGameState(initState);
   };
 
-  const travel = direction => {
+  const checkCooldown = action => {
     if (!gameState.serverData.cooldown) {
-      actions.move(direction);
+      action();
     } else {
       setGameState(prev => {
         const messages = [...prev.serverData.messages];
-        messages.push(`Cool down in effect, wait to move`);
+        messages.push(`Cool down in effect, please wait`);
         return {
           ...prev,
           serverData: {
@@ -55,6 +55,27 @@ function App() {
         };
       });
     }
+  };
+
+  const move = direction => {
+    checkCooldown(() => {
+      actions.move(direction);
+    });
+  };
+  const takeItem = itemName => {
+    checkCooldown(() => {
+      actions.takeItem(itemName);
+    });
+  };
+  const dropItem = itemName => {
+    checkCooldown(() => {
+      actions.dropItem(itemName);
+    });
+  };
+  const checkStatus = () => {
+    checkCooldown(() => {
+      actions.checkPlayerStatus();
+    });
   };
 
   useEffect(() => {
@@ -108,12 +129,7 @@ function App() {
         <>
           <HUD gameState={gameState} />
           {/* <Map graph={secretMapData} /> */}
-          <Controls gameState={gameState} callbacks={{ 
-            travel,
-            takeItem: actions.takeItem,
-            dropItem: actions.dropItem,
-            checkStatus: actions.checkPlayerStatus
-          }} />
+          <Controls gameState={gameState} callbacks={{ move, takeItem, dropItem, checkStatus }} />
         </>
       )}
       {isLoading && <div>LOADING</div>}

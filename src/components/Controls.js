@@ -42,22 +42,22 @@ const Directions = styled.div`
 export default function Controls({ gameState, callbacks }) {
   const { exits, items } = gameState.serverData.room;
   const { inventory } = gameState.serverData.player;
-  const { travel, takeItem, dropItem, checkStatus } = callbacks;
+  const { move, takeItem, dropItem, checkStatus } = callbacks;
 
   return (
     <Styles>
       {exits && (
         <Directions>
-          <button disabled={!exits.includes('n')} onClick={() => travel('n')}>
+          <button disabled={!exits.includes('n')} onClick={() => move('n')}>
             N
           </button>
-          <button disabled={!exits.includes('w')} onClick={() => travel('w')}>
+          <button disabled={!exits.includes('w')} onClick={() => move('w')}>
             W
           </button>
-          <button disabled={!exits.includes('e')} onClick={() => travel('e')}>
+          <button disabled={!exits.includes('e')} onClick={() => move('e')}>
             E
           </button>
-          <button disabled={!exits.includes('s')} onClick={() => travel('s')}>
+          <button disabled={!exits.includes('s')} onClick={() => move('s')}>
             S
           </button>
         </Directions>
@@ -70,7 +70,7 @@ export default function Controls({ gameState, callbacks }) {
         ))}
       {inventory && (
         <div>
-          <h2>Inventory</h2>
+          <h2>Inventory ({inventory.length})</h2>
           {inventory.map((item, key) => (
             <Button key={key} onClick={() => dropItem(item)}>
               Drop {item}
