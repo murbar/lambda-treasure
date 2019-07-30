@@ -37,18 +37,20 @@ const scaleCenter = (val, scale, range) => {
 const Styles = styled.div`
   width: 100%;
   overflow: scroll;
+  height: 40rem;
   canvas {
-    width: 100%;
+    width: 1600px;
   }
 `;
 
-function Map({ mapData, currentRoomId, theme }) {
+function Map({ mapData, currentRoomId, highlightRoomId, theme }) {
   const canvasRef = useRef();
 
-  const drawRoom = (x, y, roomId, isCurrentRoom) => {
+  const drawRoom = (x, y, roomId, isCurrentRoom, isHighlightRoom) => {
     const ctx = canvasRef.current.getContext('2d');
-    ctx.fillStyle = isCurrentRoom ? '#5D3411' : roomColor;
     ctx.beginPath();
+    // yikes!
+    ctx.fillStyle = isCurrentRoom ? '#BE1C29' : isHighlightRoom ? 'white' : roomColor;
     const radius = isCurrentRoom ? 18 : 15;
     ctx.arc(x, y, radius, 0, Math.PI * 2, true); // Outer circle
     ctx.shadowBlur = 0;
@@ -148,8 +150,9 @@ function Map({ mapData, currentRoomId, theme }) {
     for (const roomId in mapData) {
       const { x, y } = roomCoords[roomId];
       const isCurrentRoom = parseInt(roomId) === currentRoomId;
+      const isHighlightRoom = parseInt(roomId) === highlightRoomId;
 
-      drawRoom(x, y, roomId, isCurrentRoom);
+      drawRoom(x, y, roomId, isCurrentRoom, isHighlightRoom);
     }
   }, [mapData, currentRoomId, theme]);
 
