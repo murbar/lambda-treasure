@@ -23,13 +23,21 @@ const Styles = styled.div`
 
 export default function HUD({ gameState }) {
   const { messages, errors, cooldown } = gameState.serverData;
-  const { id, description, title, exits } = gameState.serverData.room;
+  const { id, description, title, exits, items } = gameState.serverData.room;
   return (
     <Styles>
       <div className="room">#{id}</div>
       <div className="title">{title}</div>
       <div className="desc">{description}</div>
       <div className="exits">Exits: {exits.map(e => e.toUpperCase()).join(', ')}</div>
+      {!!items.length && (
+        <div className="items">
+          Items:
+          {items.map((item, i) => (
+            <div key={i}>{item}</div>
+          ))}
+        </div>
+      )}
       {errors && (
         <div className="errors">
           {errors.map((e, i) => (
@@ -44,7 +52,7 @@ export default function HUD({ gameState }) {
           ))}
         </div>
       )}
-      {cooldown > 0 && <div className="cool-down">Cooldown {cooldown}</div>}
+      {cooldown > 0 && <div className="cool-down">CD {cooldown}</div>}
     </Styles>
   );
 }
