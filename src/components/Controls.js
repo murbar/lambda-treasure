@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import Button from 'components/common/Button';
 import compass from 'images/compass-small.svg';
+import useQueue from 'hooks/useQueue';
 
 const Styles = styled.div``;
 
 const Directions = styled.div`
   width: 12rem;
-  margin: 1rem;
-  margin-left: 20rem;
   transform: rotate(6deg);
   background: url(${compass}) center / 100% no-repeat;
+  position: absolute;
+  right: 0;
   button {
     display: inline-block;
     width: 4rem;
@@ -39,46 +40,126 @@ const Directions = styled.div`
   }
 `;
 
-export default function Controls({ gameState, callbacks }) {
+export default function Controls({ gameState, callbacks, isLoading }) {
   const { exits, items } = gameState.serverData.room;
   const { inventory } = gameState.serverData.player;
-  const { move, takeItem, dropItem, checkStatus } = callbacks;
+  const { move, takeItem, dropItem, checkStatus, sellItem } = callbacks;
+  const moveQueue = useQueue();
+  const [queueRunning, setQueueRunning] = useState(false);
+  const queueTimer = useRef(null);
+
+  const handleDirectionControlClick = e => {
+    const isShiftClick = e.shiftKey;
+    const { dir } = e.target.dataset;
+    if (isShiftClick) {
+      moveQueue.enqueue(dir);
+    } else {
+      move(dir);
+    }
+  };
+
+  // run down moveQueue
+  useEffect(() => {
+    const cd = gameState.serverData.cooldown;
+
+    const nextInQueue = () => {
+      if (queueTimer.current === null) {
+        console.log(`next called with ${cd}, not timer running, starting..`);
+        queueTimer.current = setTimeout(() => {
+          console.log('moving');
+          move(moveQueue.dequeue());
+          queueTimer.current = null;
+        }, cd + 100);
+      }
+    };
+
+    if (queueRunning && !moveQueue.count) {
+      setQueueRunning(false);
+    } else if (queueRunning && cd === 0 && !isLoading) {
+      nextInQueue();
+    }
+  }, [gameState.serverData.cooldown, isLoading, move, moveQueue, queueRunning]);
 
   return (
     <Styles>
       {exits && (
         <Directions>
-          <button disabled={!exits.includes('n')} onClick={() => move('n')}>
+          <button
+            data-dir="n"
+            disabled={!exits.includes('n') || queueRunning}
+            onClick={handleDirectionControlClick}
+          >
             N
           </button>
-          <button disabled={!exits.includes('w')} onClick={() => move('w')}>
+          <button
+            data-dir="w"
+            disabled={!exits.includes('w') || queueRunning}
+            onClick={handleDirectionControlClick}
+          >
             W
           </button>
-          <button disabled={!exits.includes('e')} onClick={() => move('e')}>
+          <button
+            data-dir="e"
+            disabled={!exits.includes('e') || queueRunning}
+            onClick={handleDirectionControlClick}
+          >
             E
           </button>
-          <button disabled={!exits.includes('s')} onClick={() => move('s')}>
+          <button
+            data-dir="s"
+            disabled={!exits.includes('s') || queueRunning}
+            onClick={handleDirectionControlClick}
+          >
             S
           </button>
         </Directions>
       )}
-      {items &&
-        items.map((item, key) => (
-          <Button key={key} onClick={() => takeItem(item)}>
-            Pick up {item}
-          </Button>
-        ))}
-      {inventory && (
+      {items && (
         <div>
-          <h2>Inventory ({inventory.length})</h2>
-          {inventory.map((item, key) => (
-            <Button key={key} onClick={() => dropItem(item)}>
-              Drop {item}
+          <h2>Items in room</h2>
+          {items.map((item, key) => (
+            <Button key={key} onClick={() => takeItem(item)}>
+              Pick up {item}
             </Button>
           ))}
         </div>
       )}
+      {inventory && (
+        <div>
+          <h2>Inventory ({inventory.length})</h2>
+          {inventory.map((item, key) => (
+            <div key={key}>
+              {item}
+              <Button onClick={() => dropItem(item)}>Drop</Button>
+              {gameState.serverData.room.title === 'Shop' && (
+                <Button onClick={() => sellItem(item)}>Sell</Button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       <Button onClick={checkStatus}>Get status</Button>
+      {moveQueue.count > 0 && (
+        <div>
+          <h2>
+            Moves queued {queueRunning && '(Running)'} {moveQueue.count}
+          </h2>
+          {moveQueue.items.map((m, key) => (
+            <span key={key}>{m}</span>
+          ))}
+          <Button onClick={() => setQueueRunning(true)}>Start</Button>
+          <Button
+            onClick={() => {
+              clearTimeout(queueTimer.current);
+              setQueueRunning(false);
+            }}
+          >
+            Stop
+          </Button>
+          <Button onClick={() => moveQueue.dequeue()}>Remove Last</Button>
+          <Button onClick={() => moveQueue.flush()}>Clear</Button>
+        </div>
+      )}
     </Styles>
   );
 }
