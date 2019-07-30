@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import Button from 'components/common/Button';
 import compass from 'images/compass-small.svg';
 
 const Styles = styled.div``;
 
 const Directions = styled.div`
   width: 12rem;
+  margin: 1rem;
   margin-left: 20rem;
   transform: rotate(6deg);
   background: url(${compass}) center / 100% no-repeat;
@@ -38,7 +40,7 @@ const Directions = styled.div`
 `;
 
 export default function Controls({ gameState, callbacks }) {
-  const exits = gameState.serverData.room.exits;
+  const { exits, items } = gameState.serverData.room;
   const { travel } = callbacks;
 
   return (
@@ -59,6 +61,12 @@ export default function Controls({ gameState, callbacks }) {
           </button>
         </Directions>
       )}
+      {items &&
+        items.map((item, key) => (
+          <Button key={key} onClick={() => callbacks.take(item)}>
+            Pick up {item}
+          </Button>
+        ))}
     </Styles>
   );
 }

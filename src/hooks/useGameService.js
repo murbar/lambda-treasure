@@ -52,43 +52,47 @@ const useGameService = apiKey => {
     }
   };
 
-  const checkIn = useCallback(
-    requestWrapper(async () => {
-      const { data } = await gameService.checkIn();
-      const {
+  const updateRoomState = useCallback(roomData => {
+    const {
+      cooldown,
+      errors,
+      messages,
+      room_id,
+      title,
+      description,
+      elevation,
+      terrain,
+      players,
+      items,
+      exits
+    } = roomData;
+    const [x, y] = parseCoordinates(roomData.coordinates);
+    setGameData(prev => {
+      return {
+        ...prev,
         cooldown,
         errors,
         messages,
-        room_id,
-        title,
-        description,
-        elevation,
-        terrain,
-        players,
-        items,
-        exits
-      } = data;
-      const [x, y] = parseCoordinates(data.coordinates);
-      setGameData(prev => {
-        return {
-          ...prev,
-          cooldown,
-          errors,
-          messages,
-          room: {
-            ...prev.room,
-            id: room_id,
-            title,
-            description,
-            coordinates: { x, y },
-            elevation,
-            terrain,
-            players,
-            items,
-            exits
-          }
-        };
-      });
+        room: {
+          ...prev.room,
+          id: room_id,
+          title,
+          description,
+          coordinates: { x, y },
+          elevation,
+          terrain,
+          players,
+          items,
+          exits
+        }
+      };
+    });
+  }, []);
+
+  const checkIn = useCallback(
+    requestWrapper(async () => {
+      const { data } = await gameService.checkIn();
+      updateRoomState(data);
     }),
     []
   );
@@ -133,45 +137,18 @@ const useGameService = apiKey => {
   const move = useCallback(
     requestWrapper(async (direction, nextRoomId = null) => {
       const { data } = await gameService.move(direction);
-      const {
-        cooldown,
-        errors,
-        messages,
-        room_id,
-        title,
-        description,
-        elevation,
-        terrain,
-        players,
-        items,
-        exits
-      } = data;
-      const [x, y] = parseCoordinates(data.coordinates);
-      setGameData(prev => {
-        return {
-          ...prev,
-          cooldown,
-          errors,
-          messages,
-          room: {
-            ...prev.room,
-            id: room_id,
-            title,
-            description,
-            coordinates: { x, y },
-            elevation,
-            terrain,
-            players,
-            items,
-            exits
-          }
-        };
-      });
+      updateRoomState(data);
     }),
     []
   );
 
-  // get status
+  const takeItem = useCallback(
+    requestWrapper(async itemName => {
+      const { data } = await gameService.takeItem(itemName);
+      updateRoomState(data);
+    }),
+    []
+  );
 
   // pick up treasure
 
@@ -201,7 +178,8 @@ const useGameService = apiKey => {
     actions: {
       checkPlayerStatus,
       checkIn,
-      move
+      move,
+      takeItem
     }
   };
 };

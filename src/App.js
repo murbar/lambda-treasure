@@ -107,8 +107,7 @@ function App() {
       {gameState.serverData && (
         <>
           <HUD gameState={gameState} />
-          <Map />
-          <Controls gameState={gameState} callbacks={{ travel }} />
+          <Controls gameState={gameState} callbacks={{ travel, take: actions.takeItem }} />
         </>
       )}
       {isLoading && <div>LOADING</div>}
