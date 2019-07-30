@@ -75,6 +75,22 @@ function App() {
       actions.takeItem(itemName);
     });
   };
+
+  const fakeRequest = () => {
+    checkCooldown(() => {
+      console.log('making fake request');
+    });
+    setGameState(prev => {
+      return {
+        ...prev,
+        serverData: {
+          ...prev.serverData,
+          cooldown: 5
+        }
+      };
+    });
+  };
+
   const dropItem = itemName => {
     checkCooldown(() => {
       actions.dropItem(itemName);
@@ -93,6 +109,7 @@ function App() {
     });
   };
 
+  // decrement cool down once per second
   useEffect(() => {
     if (gameState.serverData && gameState.serverData.cooldown > 0) {
       const timeOut = setTimeout(() => {
@@ -108,6 +125,7 @@ function App() {
     }
   }, [gameState, setGameState]);
 
+  // set useGameService data to game state
   useEffect(() => {
     setGameState(prev => ({
       ...prev,
@@ -115,6 +133,7 @@ function App() {
     }));
   }, [gameData, setGameState]);
 
+  // increment cool down on api response error
   useEffect(() => {
     if (apiError && apiError.cooldown) {
       setGameState(prev => ({
@@ -147,6 +166,11 @@ function App() {
             mapData={secretMapData}
             currentRoomId={gameState.serverData.room.id}
             highlightRoomId={461}
+          />
+          <Controls
+            gameState={gameState}
+            isLoading={isLoading}
+            callbacks={{ move, takeItem, dropItem, sellItem, checkStatus, fakeRequest }}
           />
         </>
       )}
