@@ -9,6 +9,7 @@ import Settings from 'components/Settings';
 import Footer from 'components/Footer';
 import useHotKeys from 'hooks/useHotkeys';
 import useGameService from 'hooks/useGameService';
+import secretMapData from 'secretMapData.json';
 
 const ErrorMessage = styled.div`
   background: crimson;
@@ -19,7 +20,7 @@ const ErrorMessage = styled.div`
 const initState = {
   apiKey: null,
   mapData: null,
-  serverData: null,
+  serverData: { room: { id: null } },
   apiError: null
 };
 
@@ -128,7 +129,7 @@ function App() {
       {gameState.serverData.room.id && (
         <>
           <HUD gameState={gameState} />
-          {/* <Map graph={secretMapData} /> */}
+          <Map mapData={secretMapData} currentRoomId={gameState.serverData.room.id} />
           <Controls gameState={gameState} callbacks={{ move, takeItem, dropItem, checkStatus }} />
         </>
       )}
