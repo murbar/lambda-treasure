@@ -19,9 +19,14 @@ const theme = {
     colors.darkCream
   } 100%);`,
   inputBorderRadius: `0.5rem`,
-  font: "'Alegreya Sans', sans-serif",
-  headingFont: "'Passion One', sans-serif",
+  font: "'Alegreya Sans'",
+  headingFont: "'Passion One'",
   hudShadow: '0.25rem 0.25rem 1rem rgba(0, 0, 0, 0.2)',
+  map: {
+    roomColor: '#f6d6ad',
+    currentRoomColor: '#BE1C29',
+    labelColor: '#5D3411'
+  },
   media
 };
 

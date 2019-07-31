@@ -6,8 +6,7 @@ import useHotKeys from 'hooks/useHotkeys';
 
 const dpr = window.devicePixelRatio || 1;
 
-const roomColor = '#f6d6ad';
-const mapSizePx = '2000';
+const mapSizePx = '2500';
 
 const parseCoordinates = coords => {
   return coords
@@ -55,7 +54,15 @@ const Styles = styled.div`
 
 const initFocus = { x: mapSizePx / 2, y: mapSizePx / 2 };
 
-function Map({ mapData, currentRoomId, highlightRoomId, gameState, isLoading, callbacks, theme }) {
+function Map({
+  mapData,
+  currentRoomId = 0,
+  highlightRoomId,
+  gameState,
+  isLoading,
+  callbacks,
+  theme
+}) {
   const canvasRef = useRef();
   const [mapSize, setMapSize] = useState(mapSizePx);
   const currentRoomCoords = useRef();
@@ -68,32 +75,39 @@ function Map({ mapData, currentRoomId, highlightRoomId, gameState, isLoading, ca
       const ctx = canvasRef.current.getContext('2d');
       ctx.beginPath();
       // yikes!
-      ctx.fillStyle = isCurrentRoom ? '#BE1C29' : isHighlightRoom ? 'white' : roomColor;
-      const radius = isCurrentRoom || isHighlightRoom ? mapSize / 80 : mapSize / 90;
+      ctx.fillStyle = isCurrentRoom
+        ? theme.map.currentRoomColor
+        : isHighlightRoom
+        ? 'white'
+        : theme.map.roomColor;
+      const radius = isCurrentRoom || isHighlightRoom ? mapSize / 85 : mapSize / 95;
       ctx.arc(x, y, radius, 0, Math.PI * 2, true); // Outer circle
       ctx.shadowBlur = 0;
       ctx.fill();
       // label
-      ctx.font = `bold ${mapSize / 100}px 'Alegreya Sans'`;
+      ctx.font = `bold ${mapSize / 100}px ${theme.font}`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = isCurrentRoom ? 'white' : '#5D3411';
+      ctx.fillStyle = isCurrentRoom ? 'white' : theme.map.labelColor;
       ctx.shadowBlur = 3;
       ctx.shadowColor = isCurrentRoom ? 'black' : 'white';
       ctx.fillText(roomId, x, y);
     },
-    [mapSize]
+    [mapSize, theme]
   );
 
-  const drawConnection = (fromX, fromY, toX, toY) => {
-    const ctx = canvasRef.current.getContext('2d');
-    ctx.beginPath();
-    ctx.moveTo(fromX, toX);
-    ctx.lineTo(fromY, toY);
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = roomColor;
-    ctx.stroke();
-  };
+  const drawConnection = useCallback(
+    (fromX, fromY, toX, toY) => {
+      const ctx = canvasRef.current.getContext('2d');
+      ctx.beginPath();
+      ctx.moveTo(fromX, toX);
+      ctx.lineTo(fromY, toY);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = theme.map.roomColor;
+      ctx.stroke();
+    },
+    [theme.map.roomColor]
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -186,7 +200,7 @@ function Map({ mapData, currentRoomId, highlightRoomId, gameState, isLoading, ca
 
       drawRoom(x, y, roomId, isCurrentRoom, isHighlightRoom);
     }
-  }, [mapData, currentRoomId, theme, highlightRoomId, drawRoom]);
+  }, [mapData, currentRoomId, theme, highlightRoomId, drawRoom, drawConnection]);
 
   useHotKeys(
     {
