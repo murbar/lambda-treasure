@@ -4,7 +4,7 @@ import useLocalStorageState from 'hooks/useLocalStorageState';
 import Header from 'components/Header';
 import Map from 'components/Map';
 import HUD from 'components/HUD';
-import Controls from 'components/Controls';
+import Cooldown from 'components/Cooldown';
 import Settings from 'components/Settings';
 import Footer from 'components/Footer';
 import useHotKeys from 'hooks/useHotkeys';
@@ -24,10 +24,15 @@ const initState = {
   apiError: null
 };
 
+const Styles = styled.div`
+  min-height: 100vh;
+`;
+
 function App() {
   const [gameState, setGameState] = useLocalStorageState('GAME_STATE', initState);
   const { gameData, isLoading, apiError, actions } = useGameService(gameState.apiKey);
   const [showSettings, setShowSettings] = useState(false);
+  const roomLoaded = gameState.serverData.room.id !== null;
 
   const setApiKey = apiKey => {
     setGameState(prev => ({
@@ -149,37 +154,41 @@ function App() {
   // selectively activate hotkeys when inputs not in focus
   useHotKeys({
     F13: () => console.log(gameState),
-    ArrowUp: () => move('n'),
-    ArrowRight: () => move('e'),
-    ArrowDown: () => move('s'),
-    ArrowLeft: () => move('w'),
+    // ArrowUp: () => move('n'),
+    // ArrowRight: () => move('e'),
+    // ArrowDown: () => move('s'),
+    // ArrowLeft: () => move('w'),
     z: () => setShowSettings(prev => !prev)
   });
 
   return (
-    <div>
+    <Styles>
+      <Map
+        mapData={secretMapData}
+        currentRoomId={gameState.serverData.room.id}
+        highlightRoomId={329}
+        gameState={gameState}
+        isLoading={isLoading}
+        callbacks={{ move, takeItem, dropItem, sellItem, checkStatus, fakeRequest }}
+      />
       <Header />
-      {gameState.serverData.room.id !== null && (
+      {roomLoaded && (
         <>
           <HUD gameState={gameState} />
-          <Map
-            mapData={secretMapData}
-            currentRoomId={gameState.serverData.room.id}
-            highlightRoomId={461}
-          />
-          <Controls
+          {/* <Controls
             gameState={gameState}
             isLoading={isLoading}
             callbacks={{ move, takeItem, dropItem, sellItem, checkStatus, fakeRequest }}
-          />
+          /> */}
         </>
       )}
       {isLoading && <div>LOADING</div>}
+      {roomLoaded && <Cooldown secs={gameState.serverData.cooldown} />}
       {apiError && <ErrorMessage>ERROR {JSON.stringify(apiError)}</ErrorMessage>}
       {!gameState.apiKey && <ErrorMessage>No API key, press 'z' to show settings</ErrorMessage>}
       {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />}
       {/* <Footer /> */}
-    </div>
+    </Styles>
   );
 }
 
