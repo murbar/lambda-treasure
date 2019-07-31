@@ -29,8 +29,11 @@ const DirectionalControls = styled.div`
     border: none;
     background: transparent;
     margin: 0;
-    font-family: ${p => p.theme.headingFont};
-    font-size: 1.75em;
+    padding: 0;
+    font-family: ${p => p.theme.font};
+    text-shadow: 0 0 0.5rem white;
+    font-size: 2.5em;
+    line-height: 1;
     font-weight: bold;
     cursor: pointer;
     &:hover {
@@ -38,7 +41,7 @@ const DirectionalControls = styled.div`
     }
     &[disabled] {
       cursor: default;
-      color: #aaa;
+      color: #eee;
     }
     &:focus {
       outline: none;
