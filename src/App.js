@@ -171,23 +171,7 @@ function App() {
         isLoading={isLoading}
         callbacks={{ move, takeItem, dropItem, sellItem, checkStatus, fakeRequest }}
       />
-      <Header />
-      {roomLoaded && (
-        <>
-          <HUD gameState={gameState} />
-          {/* <Controls
-            gameState={gameState}
-            isLoading={isLoading}
-            callbacks={{ move, takeItem, dropItem, sellItem, checkStatus, fakeRequest }}
-          /> */}
-        </>
-      )}
-      {isLoading && <div>LOADING</div>}
-      {roomLoaded && <Cooldown secs={gameState.serverData.cooldown} />}
-      {apiError && <ErrorMessage>ERROR {JSON.stringify(apiError)}</ErrorMessage>}
-      {!gameState.apiKey && <ErrorMessage>No API key, press 'z' to show settings</ErrorMessage>}
-      {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />}
-      {/* <Footer /> */}
+      <Footer />
     </Styles>
   );
 }

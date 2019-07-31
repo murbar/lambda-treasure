@@ -3,9 +3,14 @@ import styled from 'styled-components';
 import { ReactComponent as Heart } from 'images/icons/heart.svg';
 
 const StyledDiv = styled.div`
-  padding: 2rem 0;
-  text-align: center;
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  text-align: right;
   font-size: 0.9em;
+  line-height: 1.2;
+  text-shadow: 0 0 1px white, 0 0 1rem white;
+  font-weight: bold;
   svg {
     height: 1em;
     color: ${p => p.theme.colors.primary};
