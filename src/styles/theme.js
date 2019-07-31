@@ -24,6 +24,7 @@ const theme = {
   inputBorderRadius: `0.5rem`,
   font: "'Alegreya Sans', sans-serif",
   headingFont: "'Bungee', sans-serif",
+  hudShadow: '0.25rem 0.25rem 1rem rgba(0, 0, 0, 0.3)',
   media
 };
 
