@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import OverlayBox from 'components/common/OverlayBox';
 
 const Styles = styled.div`
+  ul {
+    margin: 0;
+  }
   li {
     color: crimson;
   }
