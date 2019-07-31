@@ -4,15 +4,19 @@ const useKeyDown = targetKey => {
   const [isKeyPressed, setIsKeyPressed] = useState(false);
 
   useEffect(() => {
-    const toggle = ({ key }) => {
-      if (key === targetKey) setIsKeyPressed(prev => !prev);
+    const handleDown = ({ key }) => {
+      if (key === targetKey) setIsKeyPressed(true);
     };
 
-    window.addEventListener('keydown', toggle);
-    window.addEventListener('keyup', toggle);
+    const handleUp = ({ key }) => {
+      if (key === targetKey) setIsKeyPressed(false);
+    };
+
+    window.addEventListener('keydown', handleDown);
+    window.addEventListener('keyup', handleUp);
     return () => {
-      window.removeEventListener('keydown', toggle);
-      window.removeEventListener('keyup', toggle);
+      window.removeEventListener('keydown', handleDown);
+      window.removeEventListener('keyup', handleUp);
     };
   }, [isKeyPressed, targetKey]);
 
