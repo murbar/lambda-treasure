@@ -3,17 +3,7 @@ import styled from 'styled-components';
 import OverlayBox from 'components/common/OverlayBox';
 import Button from 'components/common/Button';
 
-const Styles = styled.div`
-  background: rgba(255, 255, 255, 0.9);
-  padding: 1rem;
-  ${'' /* width: 50rem; */}
-  box-shadow: ${p => p.theme.hudShadow};
-  font-size: 2rem;
-  border-radius: 1rem;
-  h2 {
-    margin: 0;
-  }
-`;
+const Styles = styled.div``;
 
 export default function Inventory({ gameState, dropItem }) {
   const { inventory } = gameState.serverData.player;
