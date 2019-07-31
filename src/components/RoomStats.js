@@ -6,9 +6,10 @@ import OverlayBox from 'components/common/OverlayBox';
 const Styles = styled.div`
   line-height: 1.3;
   font-size: 2rem;
-  .room,
-  .cool-down {
+  .room {
     font-family: ${p => p.theme.headingFont};
+    font-size: 1.75em;
+    line-height: 1;
   }
   .title {
     font-size: 1.25em;
@@ -27,36 +28,43 @@ const Styles = styled.div`
     }
   }
   .items {
-    > div {
-      color: yellow;
+    button {
       font-weight: bold;
+      background: #333;
+      color: white;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      display: inline-block;
+      font-size: 0.8em;
+      text-transform: uppercase;
+      padding: 0 0.5rem;
+      margin-right: 1rem;
     }
   }
-  .cool-down {
-    color: orange;
+  .messages {
+    h3 {
+      margin: 0.5rem 0 0;
+    }
   }
-  z-index: 1;
+  z-index: 1500;
 `;
 
 export default function RoomStats({ gameState, takeItem }) {
   const { messages, errors } = gameState.serverData;
   const { id, description, title, exits, items, players } = gameState.serverData.room;
-  const { gold, speed, encumbrance, strength, name } = gameState.serverData.player;
   return (
     <OverlayBox>
       <Styles>
-        <div className="player">{name}</div>
         <div className="room">#{id}</div>
         <div className="title">{title}</div>
         <div className="desc">{description}</div>
         <div className="exits">Exits: {exits.map(e => e.toUpperCase()).join(', ')}</div>
         {!!items.length && (
           <div className="items">
-            Items:
             {items.map((item, i) => (
-              <div key={i}>
-                {item} <Button onClick={() => takeItem(item)} />
-              </div>
+              <Button key={i} onClick={() => takeItem(item)} title={`Take ${item}`}>
+                {`${item} +`}
+              </Button>
             ))}
           </div>
         )}
@@ -77,16 +85,14 @@ export default function RoomStats({ gameState, takeItem }) {
             </div>
           </div>
         )}
-        {messages && (
-          <div className="errors">
+        {messages.length > 0 && (
+          <div className="messages">
+            <h3>Messages</h3>
             {messages.map((m, i) => (
               <div key={i}>{m}</div>
             ))}
           </div>
         )}
-        <div>
-          Gold: {gold}, Strength: {strength}, Encumbrance: {encumbrance}, Speed: {speed}
-        </div>
       </Styles>
     </OverlayBox>
   );
