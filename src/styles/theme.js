@@ -4,7 +4,8 @@ const colors = {
   cream: 'hsl(39, 77%, 95%)',
   darkCream: 'hsl(39, 86%, 84%)',
   offBlack: '#222',
-  orange: 'hsl(18, 84%, 44%)'
+  orange: 'hsl(18, 84%, 44%)',
+  gold: '#ffcf40'
 };
 
 const theme = {
@@ -19,8 +20,8 @@ const theme = {
   } 100%);`,
   inputBorderRadius: `0.5rem`,
   font: "'Alegreya Sans', sans-serif",
-  headingFont: "'Bungee', sans-serif",
-  hudShadow: '0.25rem 0.25rem 1rem rgba(0, 0, 0, 0.3)',
+  headingFont: "'Passion One', sans-serif",
+  hudShadow: '0.25rem 0.25rem 1rem rgba(0, 0, 0, 0.2)',
   media
 };
 
