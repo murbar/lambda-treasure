@@ -6,21 +6,21 @@ import { useEffect, useRef } from 'react';
 //   'r': reset
 // }
 
-export default function useHotKeys(keyHandlerMap) {
+export default function useHotKeys(keyHandlerMap, noRepeat = true) {
   // TODO verify map is string and functions
 
   const targets = Object.keys(keyHandlerMap);
   const keydown = useRef(false);
 
   useEffect(() => {
-    const downHandler = ({ key }) => {
+    const downHandler = e => {
       // check for long press
-      if (keydown.current) return;
-
+      if (keydown.current && noRepeat) return;
+      const { key } = e;
       if (targets.includes(key)) {
         keydown.current = true;
         const callback = keyHandlerMap[key];
-        callback();
+        callback(e);
       }
     };
 
@@ -36,5 +36,5 @@ export default function useHotKeys(keyHandlerMap) {
       window.removeEventListener('keydown', downHandler);
       window.removeEventListener('keyup', upHandler);
     };
-  }, [targets, keyHandlerMap]);
+  }, [targets, keyHandlerMap, noRepeat]);
 }
