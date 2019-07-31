@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Button from 'components/common/Button';
 import compass from 'images/compass-small.svg';
 import useQueue from 'hooks/useQueue';
+import useKeyDown from 'hooks/useKeyDown';
 
 const Styles = styled.div``;
 
@@ -47,6 +48,7 @@ export default function Controls({ gameState, callbacks, isLoading }) {
   const moveQueue = useQueue();
   const [queueRunning, setQueueRunning] = useState(false);
   const queueTimer = useRef(null);
+  const isShiftPressed = useKeyDown('Shift');
 
   const handleDirectionControlClick = e => {
     const isShiftClick = e.shiftKey;
@@ -78,34 +80,44 @@ export default function Controls({ gameState, callbacks, isLoading }) {
     }
   }, [gameState.serverData.cooldown, isLoading, move, moveQueue, queueRunning]);
 
+  const disableDirectionButton = direction => {
+    if (queueRunning) {
+      return true;
+    } else if (isShiftPressed) {
+      return false;
+    } else {
+      return !exits.includes(direction);
+    }
+  };
+
   return (
     <Styles>
       {exits && (
         <Directions>
           <button
             data-dir="n"
-            disabled={!exits.includes('n') || queueRunning}
+            disabled={disableDirectionButton('n')}
             onClick={handleDirectionControlClick}
           >
             N
           </button>
           <button
             data-dir="w"
-            disabled={!exits.includes('w') || queueRunning}
+            disabled={disableDirectionButton('w')}
             onClick={handleDirectionControlClick}
           >
             W
           </button>
           <button
             data-dir="e"
-            disabled={!exits.includes('e') || queueRunning}
+            disabled={disableDirectionButton('e')}
             onClick={handleDirectionControlClick}
           >
             E
           </button>
           <button
             data-dir="s"
-            disabled={!exits.includes('s') || queueRunning}
+            disabled={disableDirectionButton('s')}
             onClick={handleDirectionControlClick}
           >
             S
