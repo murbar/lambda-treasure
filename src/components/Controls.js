@@ -54,9 +54,8 @@ const DirectionalControls = styled.div`
 `;
 
 export default function Controls({ gameState, callbacks, isLoading }) {
-  const { exits, items } = gameState.serverData.room;
-  const { inventory } = gameState.serverData.player;
-  const { move, takeItem, dropItem, checkStatus, sellItem } = callbacks;
+  const { exits } = gameState.serverData.room;
+  const { move } = callbacks;
   const moveQueue = useQueue();
   const [queueRunning, setQueueRunning] = useState(false);
   const queueTimer = useRef(null);
