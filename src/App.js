@@ -5,7 +5,7 @@ import Header from 'components/Header';
 import Map from 'components/Map';
 import RoomStats from 'components/RoomStats';
 import Cooldown from 'components/Cooldown';
-import Settings from 'components/Settings';
+import SettingsModal from 'components/SettingsModal';
 import Footer from 'components/Footer';
 import ApiError from 'components/ApiError';
 import GameErrors from 'components/GameErrors';
@@ -160,8 +160,7 @@ function App() {
     // ArrowUp: () => move('n'),
     // ArrowRight: () => move('e'),
     // ArrowDown: () => move('s'),
-    // ArrowLeft: () => move('w'),
-    z: () => setShowSettings(prev => !prev)
+    // ArrowLeft: () => move('w')
   });
 
   return (
@@ -185,6 +184,11 @@ function App() {
             <Inventory gameState={gameState} dropItem={dropItem} />
             <ButtonRow>
               <Button onClick={checkStatus}>Get status</Button>
+              <SettingsModal
+                gameState={gameState}
+                callbacks={{ setApiKey, resetGame }}
+                show={false}
+              />
             </ButtonRow>
           </DisplayBottomLeft>
         </>
