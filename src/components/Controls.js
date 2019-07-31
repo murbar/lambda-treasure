@@ -10,12 +10,12 @@ const Styles = styled.div``;
 const DirectionalControls = styled.div`
   width: 12rem;
   box-sizing: content-box; 
-  transform: rotate(6deg);
+  transform: rotate(-2.5deg);
   background: rgba(255,255,255,0.9) url(${compass}) center / 80% no-repeat;
   box-shadow: ${p => p.theme.hudShadow};
   position: absolute;
   right: 2rem;
-  bottom: 2rem;
+  bottom: 10%;
   z-index: 1000;
   padding: 2rem;
   border-radius: 50%;
@@ -137,31 +137,6 @@ export default function Controls({ gameState, callbacks, isLoading }) {
           </button>
         </DirectionalControls>
       )}
-      {items && (
-        <div>
-          <h2>Items in room</h2>
-          {items.map((item, key) => (
-            <Button key={key} onClick={() => takeItem(item)}>
-              Pick up {item}
-            </Button>
-          ))}
-        </div>
-      )}
-      {inventory && (
-        <div>
-          <h2>Inventory ({inventory.length})</h2>
-          {inventory.map((item, key) => (
-            <div key={key}>
-              {item}
-              <Button onClick={() => dropItem(item)}>Drop</Button>
-              {gameState.serverData.room.title === 'Shop' && (
-                <Button onClick={() => sellItem(item)}>Sell</Button>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-      <Button onClick={checkStatus}>Get status</Button>
       {moveQueue.count > 0 && (
         <div>
           <h2>
