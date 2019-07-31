@@ -18,6 +18,7 @@ import useHotKeys from 'hooks/useHotkeys';
 import useGameService from 'hooks/useGameService';
 import secretMapData from 'secretMapData.json';
 import Loading from 'components/Loading';
+import Vignette from 'components/Vignette';
 
 const initState = {
   apiKey: null,
@@ -199,6 +200,8 @@ function App() {
         isLoading={isLoading}
         callbacks={{ move, takeItem, dropItem, sellItem, checkStatus, fakeRequest }}
       />
+
+      <Vignette />
 
       <Footer />
     </Styles>

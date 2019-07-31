@@ -11,10 +11,6 @@ const StyledDiv = styled.div`
   line-height: 1.2;
   text-shadow: 0 0 1px white, 0 0 1rem white;
   font-weight: bold;
-  padding: 0.5rem;
-  background: ${p => p.theme.footerBg};
-  border-radius: 1rem;
-  box-shadow: 0 0 2rem ${p => p.theme.footerBg};
   svg {
     height: 1em;
     color: ${p => p.theme.colors.primary};

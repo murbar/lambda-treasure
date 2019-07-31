@@ -11,7 +11,7 @@ export default createGlobalStyle`
     margin: 0;
     padding: 0;
     color: ${p => p.theme.colors.foreground};
-    background: ${p => p.theme.backgroundGradient};
+    background: ${p => p.theme.colors.cream};
     font-size: 1.8rem;
     line-height: 1.7;
     font-family: ${p => p.theme.font};
