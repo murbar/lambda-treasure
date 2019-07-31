@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled, { withTheme } from 'styled-components';
+import { animated, useSpring } from 'react-spring';
 import Controls from 'components/Controls';
 import useHotKeys from 'hooks/useHotkeys';
 
@@ -46,36 +47,43 @@ const Styles = styled.div`
     z-index: -1000;
     position: absolute;
     width: ${mapSizePx}px;
-    top: calc(50% - ${p => p.focus.y}px);
-    left: calc(50% - ${p => p.focus.x}px);
-    transform: scale(1);
-    transition: all top left 0.25s;
+    ${'' /* top: calc(50% - ${p => p.focus.y}px); */}
+    ${'' /* left: calc(50% - ${p => p.focus.x}px); */}
+    transform: rotate(-2.5deg);
   }
 `;
 
+const initFocus = { x: mapSizePx / 2, y: mapSizePx / 2 };
+
 function Map({ mapData, currentRoomId, highlightRoomId, gameState, isLoading, callbacks, theme }) {
   const canvasRef = useRef();
+  const [mapSize, setMapSize] = useState(mapSizePx);
   const currentRoomCoords = useRef();
-  const [focus, setFocus] = useState({ x: mapSizePx / 2, y: mapSizePx / 2 });
+  const roomCoords = useRef({});
+  const roomConnections = useRef({});
+  const [focus, setFocus] = useState(initFocus);
 
-  const drawRoom = (x, y, roomId, isCurrentRoom, isHighlightRoom) => {
-    const ctx = canvasRef.current.getContext('2d');
-    ctx.beginPath();
-    // yikes!
-    ctx.fillStyle = isCurrentRoom ? '#BE1C29' : isHighlightRoom ? 'white' : roomColor;
-    const radius = isCurrentRoom || isHighlightRoom ? mapSizePx / 80 : mapSizePx / 90;
-    ctx.arc(x, y, radius, 0, Math.PI * 2, true); // Outer circle
-    ctx.shadowBlur = 0;
-    ctx.fill();
-    // label
-    ctx.font = `bold ${mapSizePx / 100}px 'Alegreya Sans'`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = isCurrentRoom ? 'white' : '#5D3411';
-    ctx.shadowBlur = 3;
-    ctx.shadowColor = isCurrentRoom ? 'black' : 'white';
-    ctx.fillText(roomId, x, y);
-  };
+  const drawRoom = useCallback(
+    (x, y, roomId, isCurrentRoom, isHighlightRoom) => {
+      const ctx = canvasRef.current.getContext('2d');
+      ctx.beginPath();
+      // yikes!
+      ctx.fillStyle = isCurrentRoom ? '#BE1C29' : isHighlightRoom ? 'white' : roomColor;
+      const radius = isCurrentRoom || isHighlightRoom ? mapSize / 80 : mapSize / 90;
+      ctx.arc(x, y, radius, 0, Math.PI * 2, true); // Outer circle
+      ctx.shadowBlur = 0;
+      ctx.fill();
+      // label
+      ctx.font = `bold ${mapSize / 100}px 'Alegreya Sans'`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = isCurrentRoom ? 'white' : '#5D3411';
+      ctx.shadowBlur = 3;
+      ctx.shadowColor = isCurrentRoom ? 'black' : 'white';
+      ctx.fillText(roomId, x, y);
+    },
+    [mapSize]
+  );
 
   const drawConnection = (fromX, fromY, toX, toY) => {
     const ctx = canvasRef.current.getContext('2d');
@@ -100,21 +108,13 @@ function Map({ mapData, currentRoomId, highlightRoomId, gameState, isLoading, ca
     // ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
 
+  // get coords & build connections
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     const WIDTH = canvas.width;
     const HEIGHT = canvas.height;
-
     const [maxX, minX, maxY, minY] = getCoordsMaxMinXY(mapData);
 
-    const roomConnections = {};
-    const roomCoords = {};
-
-    // get coords & build connections
     for (let roomId in mapData) {
       roomId = parseInt(roomId);
       const room = mapData[roomId];
@@ -131,7 +131,7 @@ function Map({ mapData, currentRoomId, highlightRoomId, gameState, isLoading, ca
       const xScaled = Math.ceil(scaleCenter(xNorm, scale, WIDTH / dpr));
       const yScaled = Math.ceil(scaleCenter(yNorm, scale, HEIGHT / dpr));
       const coords = { x: xScaled, y: yScaled };
-      roomCoords[roomId] = coords;
+      roomCoords.current[roomId] = coords;
 
       const isCurrentRoom = parseInt(roomId) === currentRoomId;
       if (isCurrentRoom) {
@@ -141,39 +141,52 @@ function Map({ mapData, currentRoomId, highlightRoomId, gameState, isLoading, ca
 
       // connections
       for (const neighbor in room.exits) {
+        const connections = roomConnections.current;
         const neighborId = room.exits[neighbor];
         // store connections under room with smaller id to avoid dupes
         if (neighborId < roomId) {
-          const existing = neighborId in roomConnections ? roomConnections[neighborId] : [];
+          const existing = neighborId in connections ? connections[neighborId] : [];
           if (!existing.includes(roomId)) existing.push(roomId);
-          roomConnections[neighborId] = existing;
+          connections[neighborId] = existing;
         } else {
-          const existing = roomId in roomConnections ? roomConnections[roomId] : [];
+          const existing = roomId in connections ? connections[roomId] : [];
           if (!existing.includes(neighborId)) existing.push(neighborId);
-          roomConnections[roomId] = existing;
+          connections[roomId] = existing;
         }
       }
     }
+  }, [currentRoomId, mapData]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const connections = roomConnections.current;
+    const coords = roomCoords.current;
+
+    console.log('drawing map');
 
     // draw connections
-    for (const roomId in roomConnections) {
-      const connections = roomConnections[roomId];
-      const fromCoords = roomCoords[roomId];
-      for (const c of connections) {
-        const toCoords = roomCoords[c];
+    for (const roomId in connections) {
+      const localConnections = connections[roomId];
+      const fromCoords = coords[roomId];
+      for (const c of localConnections) {
+        const toCoords = coords[c];
         drawConnection(fromCoords.x, toCoords.x, fromCoords.y, toCoords.y);
       }
     }
 
     // draw rooms
     for (const roomId in mapData) {
-      const { x, y } = roomCoords[roomId];
+      const { x, y } = coords[roomId];
       const isCurrentRoom = parseInt(roomId) === currentRoomId;
       const isHighlightRoom = parseInt(roomId) === highlightRoomId;
 
       drawRoom(x, y, roomId, isCurrentRoom, isHighlightRoom);
     }
-  }, [mapData, currentRoomId, theme, highlightRoomId]);
+  }, [mapData, currentRoomId, theme, highlightRoomId, drawRoom]);
 
   useHotKeys(
     {
@@ -193,17 +206,54 @@ function Map({ mapData, currentRoomId, highlightRoomId, gameState, isLoading, ca
         e.preventDefault();
         setFocus(prev => ({ ...prev, x: prev.x - 25 }));
       }
+      // o: e => {
+      //   e.preventDefault();
+      //   setMapSize(prev => prev * 0.8);
+      // },
+      // i: e => {
+      //   e.preventDefault();
+      //   setMapSize(prev => prev * 1.25);
+      // }
     },
     false
   );
 
   const resetFocus = () => {
-    setFocus(currentRoomCoords.current);
+    setFocus(currentRoomCoords.current ? currentRoomCoords.current : initFocus);
   };
 
+  const preventClickDefault = e => {
+    e.preventDefault();
+  };
+
+  const handleMouseMove = e => {
+    e.preventDefault();
+    const { movementX, movementY } = e;
+    const mouseButtonIsDown = e.buttons === 1;
+    if (mouseButtonIsDown) {
+      setFocus(prev => ({ x: prev.x - movementX, y: prev.y - movementY }));
+    }
+  };
+
+  const moveSpring = useSpring({
+    from: {
+      top: `calc(50% - 100px)`,
+      left: `calc(50% - 100px)`
+    },
+    to: {
+      top: `calc(50% - ${focus.y}px)`,
+      left: `calc(50% - ${focus.x}px)`
+    }
+  });
+
   return (
-    <Styles focus={focus}>
-      <canvas id="grid-canvas" ref={canvasRef} />
+    <Styles
+      focus={focus}
+      onMouseMove={handleMouseMove}
+      onMouseDown={preventClickDefault}
+      onMouseUp={preventClickDefault}
+    >
+      <animated.canvas id="grid-canvas" ref={canvasRef} style={moveSpring} />
       <Controls
         gameState={gameState}
         isLoading={isLoading}
