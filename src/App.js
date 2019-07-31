@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import useLocalStorageState from 'hooks/useLocalStorageState';
 import Header from 'components/Header';
 import Map from 'components/Map';
-import HUD from 'components/HUD';
+import RoomStats from 'components/RoomStats';
 import Cooldown from 'components/Cooldown';
 import Settings from 'components/Settings';
 import Footer from 'components/Footer';
