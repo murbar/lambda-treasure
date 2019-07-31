@@ -6,9 +6,11 @@ const Styles = styled.header`
   h1 {
     margin: 2rem;
     line-height: 1;
-    font-size: 1.4em;
-    text-shadow: 0 0 1rem black, 0 0 1px black, 0 0 1rem white;
-    color: white;
+    font-size: 1.6em;
+    text-shadow: 0 0 1rem white, 0 0 1px white;
+    color: #222;
+    text-align: center;
+    transform: rotate(-2.5deg);
   }
 `;
 
@@ -16,8 +18,10 @@ export default function Header() {
   return (
     <Styles>
       <h1>
-        Lambda <br />
-        Treasure <br />
+        Lambda
+        <br />
+        Treasure
+        <br />
         Hunt
       </h1>
     </Styles>
