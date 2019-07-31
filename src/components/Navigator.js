@@ -14,8 +14,8 @@ const DirectionalControls = styled.div`
   background: rgba(255,255,255,0.9) url(${compass}) center / 80% no-repeat;
   box-shadow: ${p => p.theme.hudShadow};
   position: absolute;
-  right: 2rem;
-  bottom: 10%;
+  right: 10%;
+  bottom: 15%;
   z-index: 1000;
   padding: 2rem;
   border-radius: 50%;
@@ -56,8 +56,8 @@ const DirectionalControls = styled.div`
   }
 `;
 
-export default function Controls({ gameState, callbacks, isLoading }) {
-  const { exits } = gameState.serverData.room;
+export default function Navigator({ gameState, callbacks, isLoading }) {
+  const { exits } = gameState.serverData;
   const { move } = callbacks;
   const moveQueue = useQueue();
   const [queueRunning, setQueueRunning] = useState(false);
