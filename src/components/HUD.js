@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Button from 'components/common/Button';
 
 const Styles = styled.div`
   background: rgba(255, 255, 255, 0.9);
@@ -22,6 +23,16 @@ const Styles = styled.div`
   .desc {
     font-style: italic;
   }
+  .players {
+    > div {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    span {
+      padding: 0.25em;
+      font-size: 0.8em;
+    }
+  }
   .items {
     > div {
       color: yellow;
@@ -34,7 +45,7 @@ const Styles = styled.div`
   z-index: 1;
 `;
 
-export default function HUD({ gameState }) {
+export default function HUD({ gameState, takeItem }) {
   const { messages, errors, cooldown } = gameState.serverData;
   const { id, description, title, exits, items, players } = gameState.serverData.room;
   const { gold, speed, encumbrance, strength, name } = gameState.serverData.player;
@@ -49,7 +60,9 @@ export default function HUD({ gameState }) {
         <div className="items">
           Items:
           {items.map((item, i) => (
-            <div key={i}>{item}</div>
+            <div key={i}>
+              {item} <Button onClick={() => takeItem(item)} />
+            </div>
           ))}
         </div>
       )}
@@ -61,11 +74,13 @@ export default function HUD({ gameState }) {
         </div>
       )}
       {players && (
-        <div className="errors">
+        <div className="players">
           Players:
-          {players.map((m, i) => (
-            <div key={i}>{m}</div>
-          ))}
+          <div>
+            {players.map((m, i) => (
+              <span key={i}>{m}</span>
+            ))}
+          </div>
         </div>
       )}
       {messages && (
