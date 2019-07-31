@@ -2,10 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Styles = styled.div`
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
+  background: rgba(255, 255, 255, 0.9);
   padding: 1rem;
   line-height: 1.3;
+  width: 50rem;
+  box-shadow: ${p => p.theme.hudShadow};
+  position: absolute;
+  font-size: 2rem;
+  border-radius: 1rem;
+  top: 2rem;
+  right: 2rem;
   .room,
   .cool-down {
     font-family: ${p => p.theme.headingFont};
@@ -25,14 +31,16 @@ const Styles = styled.div`
   .cool-down {
     color: orange;
   }
+  z-index: 1;
 `;
 
 export default function HUD({ gameState }) {
   const { messages, errors, cooldown } = gameState.serverData;
   const { id, description, title, exits, items, players } = gameState.serverData.room;
-  const { gold, speed, encumbrance, strength } = gameState.serverData.player;
+  const { gold, speed, encumbrance, strength, name } = gameState.serverData.player;
   return (
     <Styles>
+      <div className="player">{name}</div>
       <div className="room">#{id}</div>
       <div className="title">{title}</div>
       <div className="desc">{description}</div>
