@@ -30,7 +30,10 @@ const Footer = () => {
         Joel Bartlett
       </a>
       <br />{' '}
-      <a href="https://github.com/murbar/lambda-treasure" title="See the code on GitHub">
+      <a
+        href="https://github.com/lambdatreazurehunterz/lambda-treasure-fe"
+        title="See the code on GitHub"
+      >
         Have a look at the code
       </a>
     </StyledDiv>
