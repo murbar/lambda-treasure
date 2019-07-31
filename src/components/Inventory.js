@@ -6,7 +6,7 @@ import Button from 'components/common/Button';
 const Styles = styled.div``;
 
 export default function Inventory({ gameState, dropItem }) {
-  const { inventory } = gameState.serverData.player;
+  const { inventory } = gameState.serverData;
   const count = inventory.length;
   return (
     <OverlayBox>

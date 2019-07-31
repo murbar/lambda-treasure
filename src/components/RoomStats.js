@@ -50,12 +50,20 @@ const Styles = styled.div`
 `;
 
 export default function RoomStats({ gameState, takeItem }) {
-  const { messages, errors } = gameState.serverData;
-  const { id, description, title, exits, items, players } = gameState.serverData.room;
+  const {
+    messages,
+    errors,
+    room_id: roomId,
+    description,
+    title,
+    exits,
+    items,
+    players
+  } = gameState.serverData;
   return (
     <OverlayBox>
       <Styles>
-        <div className="room">#{id}</div>
+        <div className="room">#{roomId}</div>
         <div className="title">{title}</div>
         <div className="desc">{description}</div>
         <div className="exits">Exits: {exits.map(e => e.toUpperCase()).join(', ')}</div>

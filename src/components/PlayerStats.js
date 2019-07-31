@@ -41,7 +41,7 @@ const Stat = styled.div`
 `;
 
 export default function PlayerStats({ gameState }) {
-  const { gold, speed, encumbrance, strength, name } = gameState.serverData.player;
+  const { gold, speed, encumbrance, strength, name } = gameState.serverData;
   return (
     <Styles>
       <Name>{name}</Name>

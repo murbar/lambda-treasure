@@ -4,6 +4,7 @@ import useLocalStorageState from 'hooks/useLocalStorageState';
 import Header from 'components/Header';
 import Map from 'components/Map';
 import RoomStats from 'components/RoomStats';
+import PlayerStats from 'components/PlayerStats';
 import Cooldown from 'components/Cooldown';
 import SettingsModal from 'components/SettingsModal';
 import Footer from 'components/Footer';
@@ -13,29 +14,26 @@ import Inventory from 'components/Inventory';
 import ButtonRow from 'components/common/ButtonRow';
 import Button from 'components/common/Button';
 import DisplayBottomLeft from 'components/DisplayBottomLeft';
+import DisplayTopRight from 'components/DisplayTopRight';
 import Shop from 'components/Shop';
 import useHotKeys from 'hooks/useHotkeys';
 import useGameService from 'hooks/useGameService';
 import secretMapData from 'secretMapData.json';
 import Loading from 'components/Loading';
 import Vignette from 'components/Vignette';
-
-const initState = {
-  apiKey: null,
-  mapData: null,
-  serverData: { room: { id: null } },
-  apiError: null
-};
+import { initGameState, mockGameData, testingMode } from 'config';
 
 const Styles = styled.div`
   min-height: 100vh;
 `;
 
 function App() {
-  const [gameState, setGameState] = useLocalStorageState('GAME_STATE', initState);
-  const { gameData, isLoading, apiError, actions } = useGameService(gameState.apiKey);
-  const [showSettings, setShowSettings] = useState(false);
-  const roomLoaded = gameState.serverData.room.id !== null;
+  const [gameState, setGameState] = useLocalStorageState('GAME_STATE', initGameState);
+  const { gameServerData, isLoading, apiError, actions } = useGameService(
+    gameState.apiKey,
+    gameState.serverData
+  );
+  const roomLoaded = gameState.serverData.room_id !== null;
 
   const setApiKey = apiKey => {
     setGameState(prev => ({
@@ -45,7 +43,7 @@ function App() {
   };
 
   const resetGame = () => {
-    setGameState(initState);
+    setGameState(initGameState);
   };
 
   const checkCooldown = action => {
@@ -69,7 +67,7 @@ function App() {
   const move = direction => {
     let nextRoomId = null;
     try {
-      nextRoomId = secretMapData[gameState.serverData.room.id]['exits'][direction];
+      nextRoomId = secretMapData[gameState.serverData.room_id]['exits'][direction];
     } catch (error) {
       console.warn('cannot get next room ID from map data');
     }
@@ -137,9 +135,9 @@ function App() {
   useEffect(() => {
     setGameState(prev => ({
       ...prev,
-      serverData: gameData
+      serverData: gameServerData
     }));
-  }, [gameData, setGameState]);
+  }, [gameServerData, setGameState]);
 
   // increment cool down on api response error
   useEffect(() => {
@@ -156,12 +154,15 @@ function App() {
 
   // selectively activate hotkeys when inputs not in focus
   useHotKeys({
-    F13: () => console.log(gameState),
+    F13: () => console.log(gameState)
     // ArrowUp: () => move('n'),
     // ArrowRight: () => move('e'),
     // ArrowDown: () => move('s'),
     // ArrowLeft: () => move('w')
   });
+
+  // add function to take/remove item and update local inventory
+  // fix up queue UI
 
   return (
     <Styles>
@@ -169,14 +170,30 @@ function App() {
 
       <Loading isLoading={isLoading} />
 
-      {apiError && <ApiError messages={JSON.stringify(apiError)} />}
-      {!gameState.apiKey && <ApiError messages="No API key, press 'z' to show settings" />}
+      {apiError && <ApiError message={JSON.stringify(apiError)} />}
+      {!gameState.apiKey && <ApiError message="No API key, press 'z' to show settings" />}
+
+      <Map
+        mapData={secretMapData}
+        currentRoomId={gameState.serverData.room_id}
+        highlightRoomId={329}
+        gameState={gameState}
+        isLoading={isLoading}
+        callbacks={{ move, takeItem, dropItem, sellItem, checkStatus, fakeRequest }}
+      />
+
+      <Vignette />
+
+      {/* {true && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />} */}
 
       {roomLoaded && (
         <>
           <Cooldown secs={gameState.serverData.cooldown} />
           {/* <Cooldown secs={23} /> */}
-          <HUD gameState={gameState} />
+          <DisplayTopRight>
+            <PlayerStats gameState={gameState} />
+            <RoomStats gameState={gameState} />
+          </DisplayTopRight>
           <DisplayBottomLeft>
             {/* <GameErrors messages={[`No API key, press 'z' to show settings`, 'Another error!']} /> */}
             <GameErrors messages={gameState.serverData.errors} />
@@ -193,19 +210,6 @@ function App() {
           </DisplayBottomLeft>
         </>
       )}
-
-      {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />}
-
-      <Map
-        mapData={secretMapData}
-        currentRoomId={gameState.serverData.room.id}
-        highlightRoomId={329}
-        gameState={gameState}
-        isLoading={isLoading}
-        callbacks={{ move, takeItem, dropItem, sellItem, checkStatus, fakeRequest }}
-      />
-
-      <Vignette />
 
       <Footer />
     </Styles>

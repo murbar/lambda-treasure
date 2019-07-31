@@ -6,8 +6,8 @@ import Button from 'components/common/Button';
 const Styles = styled.div``;
 
 export default function Shop({ gameState, sellItem }) {
-  const inShop = gameState.serverData.room.title === 'Shop';
-  const { inventory } = gameState.serverData.player;
+  const inShop = gameState.serverData.title === 'Shop';
+  const { inventory } = gameState.serverData;
   return inShop ? (
     <OverlayBox>
       <h2>Welcome to the shop</h2>
@@ -15,9 +15,7 @@ export default function Shop({ gameState, sellItem }) {
         <>
           {inventory.map((item, key) => (
             <div key={key}>
-              {gameState.serverData.room.title === 'Shop' && (
-                <Button onClick={() => sellItem(item)}>Sell</Button>
-              )}
+              <Button onClick={() => sellItem(item)}>Sell</Button>
             </div>
           ))}
         </>
