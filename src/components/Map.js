@@ -1,9 +1,12 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled, { withTheme } from 'styled-components';
+import Controls from 'components/Controls';
+import useHotKeys from 'hooks/useHotkeys';
 
 const dpr = window.devicePixelRatio || 1;
 
 const roomColor = '#f6d6ad';
+const mapSizePx = '2000';
 
 const parseCoordinates = coords => {
   return coords
@@ -36,27 +39,36 @@ const scaleCenter = (val, scale, range) => {
 
 const Styles = styled.div`
   width: 100%;
-  overflow: scroll;
-  height: 40rem;
+  height: 100%;
+  overflow: hidden;
+  position: absolute;
   canvas {
-    width: 1600px;
+    z-index: -1000;
+    position: absolute;
+    width: ${mapSizePx}px;
+    top: calc(50% - ${p => p.focus.y}px);
+    left: calc(50% - ${p => p.focus.x}px);
+    transform: scale(1);
+    transition: all top left 0.25s;
   }
 `;
 
-function Map({ mapData, currentRoomId, highlightRoomId, theme }) {
+function Map({ mapData, currentRoomId, highlightRoomId, gameState, isLoading, callbacks, theme }) {
   const canvasRef = useRef();
+  const currentRoomCoords = useRef();
+  const [focus, setFocus] = useState({ x: mapSizePx / 2, y: mapSizePx / 2 });
 
   const drawRoom = (x, y, roomId, isCurrentRoom, isHighlightRoom) => {
     const ctx = canvasRef.current.getContext('2d');
     ctx.beginPath();
     // yikes!
     ctx.fillStyle = isCurrentRoom ? '#BE1C29' : isHighlightRoom ? 'white' : roomColor;
-    const radius = isCurrentRoom ? 18 : 15;
+    const radius = isCurrentRoom || isHighlightRoom ? mapSizePx / 80 : mapSizePx / 90;
     ctx.arc(x, y, radius, 0, Math.PI * 2, true); // Outer circle
     ctx.shadowBlur = 0;
     ctx.fill();
     // label
-    ctx.font = "bold 15px 'Alegreya Sans'";
+    ctx.font = `bold ${mapSizePx / 100}px 'Alegreya Sans'`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = isCurrentRoom ? 'white' : '#5D3411';
@@ -70,7 +82,7 @@ function Map({ mapData, currentRoomId, highlightRoomId, theme }) {
     ctx.beginPath();
     ctx.moveTo(fromX, toX);
     ctx.lineTo(fromY, toY);
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 4;
     ctx.strokeStyle = roomColor;
     ctx.stroke();
   };
@@ -116,9 +128,16 @@ function Map({ mapData, currentRoomId, highlightRoomId, theme }) {
         ((1 - normalizeNum(rawY, maxY, minY)) * HEIGHT) / dpr
       ];
       const scale = 0.9;
-      const xScaled = Math.ceil(scaleCenter(xNorm, scale, WIDTH));
-      const yScaled = Math.ceil(scaleCenter(yNorm, scale, HEIGHT));
-      roomCoords[roomId] = { x: xScaled, y: yScaled };
+      const xScaled = Math.ceil(scaleCenter(xNorm, scale, WIDTH / dpr));
+      const yScaled = Math.ceil(scaleCenter(yNorm, scale, HEIGHT / dpr));
+      const coords = { x: xScaled, y: yScaled };
+      roomCoords[roomId] = coords;
+
+      const isCurrentRoom = parseInt(roomId) === currentRoomId;
+      if (isCurrentRoom) {
+        setFocus(coords);
+        currentRoomCoords.current = coords;
+      }
 
       // connections
       for (const neighbor in room.exits) {
@@ -154,11 +173,42 @@ function Map({ mapData, currentRoomId, highlightRoomId, theme }) {
 
       drawRoom(x, y, roomId, isCurrentRoom, isHighlightRoom);
     }
-  }, [mapData, currentRoomId, theme]);
+  }, [mapData, currentRoomId, theme, highlightRoomId]);
+
+  useHotKeys(
+    {
+      ArrowUp: e => {
+        e.preventDefault();
+        setFocus(prev => ({ ...prev, y: prev.y - 25 }));
+      },
+      ArrowRight: e => {
+        e.preventDefault();
+        setFocus(prev => ({ ...prev, x: prev.x + 25 }));
+      },
+      ArrowDown: e => {
+        e.preventDefault();
+        setFocus(prev => ({ ...prev, y: prev.y + 25 }));
+      },
+      ArrowLeft: e => {
+        e.preventDefault();
+        setFocus(prev => ({ ...prev, x: prev.x - 25 }));
+      }
+    },
+    false
+  );
+
+  const resetFocus = () => {
+    setFocus(currentRoomCoords.current);
+  };
 
   return (
-    <Styles>
+    <Styles focus={focus}>
       <canvas id="grid-canvas" ref={canvasRef} />
+      <Controls
+        gameState={gameState}
+        isLoading={isLoading}
+        callbacks={{ ...callbacks, resetFocus }}
+      />
     </Styles>
   );
 }

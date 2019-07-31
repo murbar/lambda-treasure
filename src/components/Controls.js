@@ -7,21 +7,30 @@ import useKeyDown from 'hooks/useKeyDown';
 
 const Styles = styled.div``;
 
-const Directions = styled.div`
+const DirectionalControls = styled.div`
   width: 12rem;
+  box-sizing: content-box; 
   transform: rotate(6deg);
-  background: url(${compass}) center / 100% no-repeat;
+  background: rgba(255,255,255,0.9) url(${compass}) center / 80% no-repeat;
+  box-shadow: ${p => p.theme.hudShadow};
   position: absolute;
-  right: 0;
+  right: 2rem;
+  bottom: 2rem;
+  z-index: 1000;
+  padding: 2rem;
+  border-radius: 50%;
+  }
   button {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 4rem;
     height: 4rem;
     border: none;
     background: transparent;
     margin: 0;
-    font-family: ${p => p.theme.font};
-    font-size: 1.5em;
+    font-family: ${p => p.theme.headingFont};
+    font-size: 1.75em;
     font-weight: bold;
     cursor: pointer;
     &:hover {
@@ -31,13 +40,16 @@ const Directions = styled.div`
       cursor: default;
       color: #aaa;
     }
+    &:focus {
+      outline: none;
+    }
   }
   button:nth-child(1),
-  button:nth-child(4) {
+  button:nth-child(5) {
     margin: 0 4rem;
   }
-  button:nth-child(2) {
-    margin-right: 4rem;
+  button:nth-child(3) {
+
   }
 `;
 
@@ -93,7 +105,7 @@ export default function Controls({ gameState, callbacks, isLoading }) {
   return (
     <Styles>
       {exits && (
-        <Directions>
+        <DirectionalControls>
           <button
             data-dir="n"
             disabled={disableDirectionButton('n')}
@@ -108,6 +120,7 @@ export default function Controls({ gameState, callbacks, isLoading }) {
           >
             W
           </button>
+          <button onClick={callbacks.resetFocus}>·</button>
           <button
             data-dir="e"
             disabled={disableDirectionButton('e')}
@@ -122,7 +135,7 @@ export default function Controls({ gameState, callbacks, isLoading }) {
           >
             S
           </button>
-        </Directions>
+        </DirectionalControls>
       )}
       {items && (
         <div>
@@ -157,7 +170,12 @@ export default function Controls({ gameState, callbacks, isLoading }) {
           {moveQueue.items.map((m, key) => (
             <span key={key}>{m}</span>
           ))}
-          <Button onClick={() => setQueueRunning(true)}>Start</Button>
+          <Button
+            onClick={() => setQueueRunning(true)}
+            disabled={gameState.serverData.cooldown > 0}
+          >
+            Start
+          </Button>
           <Button
             onClick={() => {
               clearTimeout(queueTimer.current);
