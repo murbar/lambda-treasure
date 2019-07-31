@@ -1,4 +1,4 @@
-import { media } from './helpers';
+import { media, addAlpha } from './helpers';
 
 const colors = {
   cream: 'hsl(39, 77%, 95%)',
@@ -6,10 +6,6 @@ const colors = {
   offBlack: '#222',
   orange: 'hsl(18, 84%, 44%)'
 };
-
-// const addAlpha = (hsl, alpha) => {
-//   return `${hsl.slice(0, -1)}, ${alpha})`;
-// };
 
 const theme = {
   colors: {
@@ -25,6 +21,7 @@ const theme = {
   font: "'Alegreya Sans', sans-serif",
   headingFont: "'Bungee', sans-serif",
   hudShadow: '0.25rem 0.25rem 1rem rgba(0, 0, 0, 0.3)',
+  footerBg: addAlpha(colors.darkCream, 0.8),
   media
 };
 
