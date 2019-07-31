@@ -7,15 +7,17 @@ import HUD from 'components/HUD';
 import Cooldown from 'components/Cooldown';
 import Settings from 'components/Settings';
 import Footer from 'components/Footer';
+import ApiError from 'components/ApiError';
+import GameErrors from 'components/GameErrors';
+import Inventory from 'components/Inventory';
+import ButtonRow from 'components/common/ButtonRow';
+import Button from 'components/common/Button';
+import DisplayBottomLeft from 'components/DisplayBottomLeft';
+import Shop from 'components/Shop';
 import useHotKeys from 'hooks/useHotkeys';
 import useGameService from 'hooks/useGameService';
 import secretMapData from 'secretMapData.json';
-
-const ErrorMessage = styled.div`
-  background: crimson;
-  color: white;
-  padding: 2rem;
-`;
+import Loading from 'components/Loading';
 
 const initState = {
   apiKey: null,
@@ -163,6 +165,32 @@ function App() {
 
   return (
     <Styles>
+      <Header />
+
+      <Loading isLoading={isLoading} />
+
+      {apiError && <ApiError messages={JSON.stringify(apiError)} />}
+      {!gameState.apiKey && <ApiError messages="No API key, press 'z' to show settings" />}
+
+      {roomLoaded && (
+        <>
+          <Cooldown secs={gameState.serverData.cooldown} />
+          {/* <Cooldown secs={23} /> */}
+          <HUD gameState={gameState} />
+          <DisplayBottomLeft>
+            {/* <GameErrors messages={[`No API key, press 'z' to show settings`, 'Another error!']} /> */}
+            <GameErrors messages={gameState.serverData.errors} />
+            <Shop gameState={gameState} sellItem={sellItem} />
+            <Inventory gameState={gameState} dropItem={dropItem} />
+            <ButtonRow>
+              <Button onClick={checkStatus}>Get status</Button>
+            </ButtonRow>
+          </DisplayBottomLeft>
+        </>
+      )}
+
+      {showSettings && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />}
+
       <Map
         mapData={secretMapData}
         currentRoomId={gameState.serverData.room.id}
@@ -171,6 +199,7 @@ function App() {
         isLoading={isLoading}
         callbacks={{ move, takeItem, dropItem, sellItem, checkStatus, fakeRequest }}
       />
+
       <Footer />
     </Styles>
   );
