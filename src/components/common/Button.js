@@ -8,11 +8,15 @@ export default styled.button`
   padding: 0.25rem 1.5rem;
   background: ${p => p.theme.colors.primary};
   color: white;
+  margin-right: 1rem;
   &:hover {
     background: white;
     color: ${p => p.theme.colors.primary};
   }
   &:focus {
     outline: none;
+  }
+  &:last-child {
+    margin-right: 0;
   }
 `;
