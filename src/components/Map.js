@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled, { withTheme } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
-import Controls from 'components/Controls';
+import Navigator from 'components/Navigator';
 import useHotKeys from 'hooks/useHotkeys';
 
 const dpr = window.devicePixelRatio || 1;
@@ -268,7 +268,7 @@ function Map({
       onMouseUp={preventClickDefault}
     >
       <animated.canvas id="grid-canvas" ref={canvasRef} style={moveSpring} />
-      <Controls
+      <Navigator
         gameState={gameState}
         isLoading={isLoading}
         callbacks={{ ...callbacks, resetFocus }}
