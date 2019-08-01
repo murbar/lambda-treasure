@@ -10,16 +10,14 @@ const Styles = styled.div``;
 const DirectionalControls = styled.div`
   width: 16rem;
   height: 16rem;
-
   transform: rotate(-2.5deg);
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   box-shadow: ${p => p.theme.hudShadow};
   position: absolute;
   right: 10%;
   bottom: 15%;
   z-index: 1000;
   border-radius: 50%;
-  }
   svg {
     width: 130%;
     position: absolute;
@@ -29,7 +27,7 @@ const DirectionalControls = styled.div`
     opacity: 0.7;
   }
   .buttons {
-    box-sizing: content-box; 
+    box-sizing: content-box;
     position: absolute;
     top: 0;
     left: 0;
@@ -69,14 +67,77 @@ const DirectionalControls = styled.div`
     margin: 0 4rem;
   }
   button:nth-child(3) {
+  }
+`;
 
+const ControlQueue = styled.div`
+  position: absolute;
+  bottom: calc(20% + 16rem);
+  right: calc(10% - 1rem);
+  text-align: right;
+  max-width: 50rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: ${p => p.theme.queue.bgColor};
+  h2 {
+    margin-bottom: 1rem;
+  }
+  button {
+    font-size: 1em;
+  }
+`;
+
+const QueueItems = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  span.step {
+    position: absolute;
+    color: black;
+    top: -0.5em;
+    right: -0.5em;
+    background: ${p => p.theme.colors.darkCream};
+    line-height: 1;
+    padding: 0 0.25em;
+    border-radius: 50%;
+    width: 1em;
+  }
+  > span {
+    display: inline-block;
+    width: 1.5em;
+    color: white;
+    background: black;
+    text-align: center;
+    font-size: 1.25em;
+    border-radius: 0.25em;
+    margin: 0 3rem 1.25rem 0;
+    position: relative;
+    text-transform: uppercase;
+    font-weight: bold;
+    &:after {
+      content: '→';
+      display: block;
+      position: absolute;
+      color: black;
+      font-size: 1.25em;
+      top: 0;
+      left: -2.75rem;
+    }
+  }
+  > span:last-child {
+    &:after {
+      content: '';
+    }
+  }
+  > span:first-child {
+    margin-right: 0;
   }
 `;
 
 export default function Navigator({ gameState, callbacks, isLoading }) {
   const { exits } = gameState.serverData;
   const { move } = callbacks;
-  const moveQueue = useQueue();
+  const moveQueue = useQueue(['n', 'n', 'w', 'e']);
   const [queueRunning, setQueueRunning] = useState(false);
   const queueTimer = useRef(null);
   const isShiftPressed = useKeyDown('Shift');
@@ -161,18 +222,25 @@ export default function Navigator({ gameState, callbacks, isLoading }) {
       )}
 
       {moveQueue.count > 0 && (
-        <div>
+        <ControlQueue>
+          {/* <OverlayBox> */}
           <h2>
-            Moves queued {queueRunning && '(Running)'} {moveQueue.count}
+            {moveQueue.count} moves in queue {queueRunning && '(Running)'}
           </h2>
-          {moveQueue.items.map((m, key) => (
-            <span key={key}>{m}</span>
-          ))}
+          <QueueItems>
+            {moveQueue.items.map((m, key) => (
+              <>
+                <span key={key}>
+                  {m} <span className="step">{moveQueue.items.length - key}</span>
+                </span>
+              </>
+            ))}
+          </QueueItems>
           <Button
             onClick={() => setQueueRunning(true)}
             disabled={gameState.serverData.cooldown > 0}
           >
-            Start
+            Go
           </Button>
           <Button
             onClick={() => {
@@ -180,11 +248,12 @@ export default function Navigator({ gameState, callbacks, isLoading }) {
               setQueueRunning(false);
             }}
           >
-            Stop
+            Pause
           </Button>
-          <Button onClick={() => moveQueue.dequeue()}>Remove Last</Button>
+          <Button onClick={() => moveQueue.dequeue()}>Pop</Button>
           <Button onClick={() => moveQueue.flush()}>Clear</Button>
-        </div>
+          {/* </OverlayBox> */}
+        </ControlQueue>
       )}
     </Styles>
   );

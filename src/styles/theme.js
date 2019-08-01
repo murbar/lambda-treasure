@@ -1,4 +1,4 @@
-import { media } from './helpers';
+import { media, addAlpha } from './helpers';
 
 const colors = {
   cream: 'hsl(39, 77%, 95%)',
@@ -26,6 +26,9 @@ const theme = {
     roomColor: '#f6d6ad',
     currentRoomColor: '#BE1C29',
     labelColor: '#5D3411'
+  },
+  queue: {
+    bgColor: addAlpha(colors.cream, 0.8)
   },
   media
 };
