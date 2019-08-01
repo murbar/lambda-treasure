@@ -10,7 +10,6 @@ export default styled.button`
   color: white;
   margin-right: 1rem;
   cursor: pointer;
-  ${'' /* text-transform: uppercase; */}
   font-weight: bold;
   &:hover {
     background: white;
