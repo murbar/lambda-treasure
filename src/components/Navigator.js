@@ -18,6 +18,7 @@ const DirectionalControls = styled.div`
   bottom: 15%;
   z-index: 2000;
   border-radius: 50%;
+  pointer-events: ${p => (p.queueRunning ? 'none' : 'auto')};
   svg {
     width: 130%;
     position: absolute;
@@ -27,6 +28,7 @@ const DirectionalControls = styled.div`
     opacity: 0.7;
   }
   .buttons {
+    opacity: ${p => (p.queueRunning ? '0.25' : '1')};
     box-sizing: content-box;
     position: absolute;
     top: 0;
@@ -174,9 +176,7 @@ export default function Navigator({ gameState, callbacks, isLoading }) {
   }, [gameState.serverData.cooldown, isLoading, move, moveQueue, queueRunning]);
 
   const disableDirectionButton = direction => {
-    if (queueRunning) {
-      return true;
-    } else if (isShiftPressed) {
+    if (isShiftPressed) {
       return false;
     } else {
       return !exits.includes(direction);
@@ -186,7 +186,7 @@ export default function Navigator({ gameState, callbacks, isLoading }) {
   return (
     <Styles>
       {exits.length > 0 && (
-        <DirectionalControls>
+        <DirectionalControls queueRunning={queueRunning}>
           <CompassImage />
           <div className="buttons">
             <button
