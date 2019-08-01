@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-const useQueue = () => {
-  const [items, setItems] = useState([]);
+const useQueue = (initItems = []) => {
+  const [items, setItems] = useState(initItems);
   const lastItem = items[items.length - 1];
 
   const enqueue = item => {
