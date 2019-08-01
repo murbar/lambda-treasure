@@ -205,7 +205,6 @@ function App() {
       <Loading isLoading={isLoading} />
       <Map
         mapData={secretMapData}
-        // mapData={mapData}
         currentRoomId={gameState.serverData.room_id}
         focusRoomId={focusRoomId}
         gameState={gameState}
