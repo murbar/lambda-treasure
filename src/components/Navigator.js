@@ -16,7 +16,7 @@ const DirectionalControls = styled.div`
   position: absolute;
   right: 10%;
   bottom: 15%;
-  z-index: 1000;
+  z-index: 2000;
   border-radius: 50%;
   svg {
     width: 130%;
@@ -75,7 +75,7 @@ const ControlQueue = styled.div`
   bottom: calc(20% + 16rem);
   right: calc(10% - 1rem);
   text-align: right;
-  max-width: 50rem;
+  max-width: 45rem;
   padding: 1rem;
   border-radius: 1rem;
   background: ${p => p.theme.queue.bgColor};
@@ -90,7 +90,8 @@ const ControlQueue = styled.div`
 const QueueItems = styled.div`
   display: flex;
   flex-direction: row-reverse;
-  flex-wrap: wrap;
+  flex-wrap: wrap-reverse;
+  margin-right: -2rem;
   span.step {
     position: absolute;
     color: black;
@@ -130,14 +131,14 @@ const QueueItems = styled.div`
     }
   }
   > span:first-child {
-    margin-right: 0;
+    ${'' /* margin-right: 0; */}
   }
 `;
 
 export default function Navigator({ gameState, callbacks, isLoading }) {
   const { exits } = gameState.serverData;
   const { move } = callbacks;
-  const moveQueue = useQueue(['n', 'n', 'w', 'e']);
+  const moveQueue = useQueue(['n', 'n', 'w', 'e', 'n', 'n', 'w', 'e', 'n', 'n', 'w', 'e']);
   const [queueRunning, setQueueRunning] = useState(false);
   const queueTimer = useRef(null);
   const isShiftPressed = useKeyDown('Shift');
