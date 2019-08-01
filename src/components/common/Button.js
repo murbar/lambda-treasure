@@ -5,7 +5,7 @@ export default styled.button`
   border: none;
   border-radius: ${p => p.theme.inputBorderRadius};
   font-size: 1.25em;
-  padding: 0.25rem 1.5rem;
+  padding: 0.25em 0.75em;
   background: ${p => p.theme.colors.primary};
   color: white;
   margin-right: 1rem;
