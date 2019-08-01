@@ -26,7 +26,25 @@ const useGameService = (apiKey, initServerData) => {
     }
   };
 
-  const checkIn = useCallback(
+  // init AND check status to get all game data
+  const refresh = useCallback(
+    requestWrapper(async () => {
+      const { data: roomData } = await gameService.checkIn();
+      let playerData;
+      setTimeout(async () => {
+        const { data } = await gameService.checkIn();
+        playerData = data;
+      }, roomData.cooldown * 1000 + 10);
+      setGameServerData(prev => ({
+        ...prev,
+        ...roomData,
+        ...playerData
+      }));
+    }),
+    []
+  );
+
+  const checkRoomStatus = useCallback(
     requestWrapper(async () => {
       const { data } = await gameService.checkIn();
       setGameServerData(prev => ({
@@ -110,16 +128,17 @@ const useGameService = (apiKey, initServerData) => {
 
   useEffect(() => {
     httpService.setAuthKey(apiKey);
-    if (apiKey && !testingMode) checkIn();
-  }, [apiKey, checkIn]);
+    if (apiKey && !testingMode) checkRoomStatus();
+  }, [apiKey, checkRoomStatus]);
 
   return {
     gameServerData,
     isLoading,
     apiError,
     actions: {
+      refresh,
       checkPlayerStatus,
-      checkIn,
+      checkRoomStatus,
       move,
       takeItem,
       dropItem,
