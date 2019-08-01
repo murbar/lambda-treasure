@@ -6,9 +6,10 @@ export default styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 5000;
+  z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.4);
+  pointer-events: none;
 `;
