@@ -8,12 +8,12 @@ import FormField from 'components/common/FormField';
 import ButtonRow from './common/ButtonRow';
 
 const Styles = styled.div`
-  width: 50rem;
+  width: 30rem;
   padding: 1rem;
 `;
 
-export default function SettingsModal({ gameState, callbacks, isShowing }) {
-  const [key, setKey] = useState(gameState.apiKey);
+export default function SettingsModal({ gameState, mapData, setFocus, isShowing = false }) {
+  const [room, setRoom] = useState(gameState.serverData.room_id);
   const [showModal, setShowModal] = useState(isShowing);
 
   useEffect(() => {
@@ -21,12 +21,12 @@ export default function SettingsModal({ gameState, callbacks, isShowing }) {
   }, [isShowing]);
 
   const save = () => {
-    callbacks.setApiKey(key);
-    setShowModal(false);
+    setFocus(room);
+    // setShowModal(false);
   };
 
   const handleChange = e => {
-    setKey(e.target.value);
+    setRoom(e.target.value);
   };
 
   const handleKeyPress = e => {
@@ -35,27 +35,25 @@ export default function SettingsModal({ gameState, callbacks, isShowing }) {
 
   return (
     <>
-      <Button onClick={() => setShowModal(true)}>Settings</Button>
+      <Button onClick={() => setShowModal(true)}>Find Room</Button>
       {showModal && (
         <FullScreenModal>
           <OverlayBox>
             <Styles>
-              <h2>Settings</h2>
-              <p>Press 'z' to hide settings</p>
+              <h2>Find room by ID</h2>
               <FormField>
-                <label htmlFor="api-key">API Key</label>
+                <label htmlFor="room-id">Room #</label>
                 <Input
                   type="text"
-                  id="api-key"
-                  placeholder="Token xxxxxxxxxxxxxxxxxxx"
-                  value={key || ''}
+                  id="room-id"
+                  placeholder="000"
+                  value={room || ''}
                   onChange={handleChange}
                   onKeyPress={handleKeyPress}
                 />
               </FormField>
               <ButtonRow>
-                <Button onClick={save}>Save & Close</Button>
-                <Button onClick={callbacks.resetGame}>Reset Game</Button>
+                <Button onClick={save}>Find</Button>
               </ButtonRow>
             </Styles>
           </OverlayBox>
