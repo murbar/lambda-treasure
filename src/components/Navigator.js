@@ -1,24 +1,40 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import Button from 'components/common/Button';
-import compass from 'images/compass-small.svg';
+import { ReactComponent as CompassImage } from 'images/compass-small.svg';
 import useQueue from 'hooks/useQueue';
 import useKeyDown from 'hooks/useKeyDown';
 
 const Styles = styled.div``;
 
 const DirectionalControls = styled.div`
-  width: 12rem;
-  box-sizing: content-box; 
+  width: 16rem;
+  height: 16rem;
+
   transform: rotate(-2.5deg);
-  background: rgba(255,255,255,0.9) url(${compass}) center / 80% no-repeat;
+  background: rgba(255,255,255,0.9);
   box-shadow: ${p => p.theme.hudShadow};
   position: absolute;
   right: 10%;
   bottom: 15%;
   z-index: 1000;
-  padding: 2rem;
   border-radius: 50%;
+  }
+  svg {
+    width: 130%;
+    position: absolute;
+    top: -15%;
+    left: -15%;
+    z-index: 0;
+    opacity: 0.7;
+  }
+  .buttons {
+    box-sizing: content-box; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 2rem;
+    z-index: 1;
   }
   button {
     display: inline-flex;
@@ -36,6 +52,7 @@ const DirectionalControls = styled.div`
     line-height: 1;
     font-weight: bold;
     cursor: pointer;
+
     &:hover {
       color: ${p => p.theme.colors.primary};
     }
@@ -106,39 +123,43 @@ export default function Navigator({ gameState, callbacks, isLoading }) {
 
   return (
     <Styles>
-      {exits && (
+      {exits.length > 0 && (
         <DirectionalControls>
-          <button
-            data-dir="n"
-            disabled={disableDirectionButton('n')}
-            onClick={handleDirectionControlClick}
-          >
-            N
-          </button>
-          <button
-            data-dir="w"
-            disabled={disableDirectionButton('w')}
-            onClick={handleDirectionControlClick}
-          >
-            W
-          </button>
-          <button onClick={callbacks.resetFocus}>·</button>
-          <button
-            data-dir="e"
-            disabled={disableDirectionButton('e')}
-            onClick={handleDirectionControlClick}
-          >
-            E
-          </button>
-          <button
-            data-dir="s"
-            disabled={disableDirectionButton('s')}
-            onClick={handleDirectionControlClick}
-          >
-            S
-          </button>
+          <CompassImage />
+          <div className="buttons">
+            <button
+              data-dir="n"
+              disabled={disableDirectionButton('n')}
+              onClick={handleDirectionControlClick}
+            >
+              N
+            </button>
+            <button
+              data-dir="w"
+              disabled={disableDirectionButton('w')}
+              onClick={handleDirectionControlClick}
+            >
+              W
+            </button>
+            <button onClick={callbacks.resetFocus}>·</button>
+            <button
+              data-dir="e"
+              disabled={disableDirectionButton('e')}
+              onClick={handleDirectionControlClick}
+            >
+              E
+            </button>
+            <button
+              data-dir="s"
+              disabled={disableDirectionButton('s')}
+              onClick={handleDirectionControlClick}
+            >
+              S
+            </button>
+          </div>
         </DirectionalControls>
       )}
+
       {moveQueue.count > 0 && (
         <div>
           <h2>
