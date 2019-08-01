@@ -115,6 +115,19 @@ const useGameService = (apiKey, initServerData) => {
     []
   );
 
+  const examineItem = useCallback(
+    requestWrapper(async itemName => {
+      const { data } = await gameService.examine(itemName);
+      console.log(data);
+      // handle special data shape
+      setGameServerData(prev => ({
+        ...prev,
+        ...data
+      }));
+    }),
+    []
+  );
+
   // pick up treasure
 
   // drop treasure
@@ -147,7 +160,8 @@ const useGameService = (apiKey, initServerData) => {
       move,
       takeItem,
       dropItem,
-      sellItem
+      sellItem,
+      examineItem
     }
   };
 };

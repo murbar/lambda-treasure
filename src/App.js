@@ -18,10 +18,10 @@ import DisplayBottomLeft from 'components/DisplayBottomLeft';
 import DisplayTopRight from 'components/DisplayTopRight';
 import useHotKeys from 'hooks/useHotkeys';
 import useGameService from 'hooks/useGameService';
-import secretMapData from 'secretMapData.json';
 import Loading from 'components/Loading';
 import { initGameState, mockGameData, testingMode, initRoomData } from 'config';
 import { updateMapData } from 'helpers';
+// import secretMapData from 'secretMapData.json';
 
 const Styles = styled.div`
   min-height: 100%;
@@ -69,7 +69,7 @@ function App() {
   const move = direction => {
     let nextRoomId = null;
     try {
-      nextRoomId = secretMapData[gameState.serverData.room_id]['exits'][direction];
+      nextRoomId = mapData[gameState.serverData.room_id]['exits'][direction];
     } catch (error) {
       console.warn('cannot get next room ID from map data');
     }
@@ -204,7 +204,8 @@ function App() {
       <Header />
       <Loading isLoading={isLoading} />
       <Map
-        mapData={secretMapData}
+        // mapData={secretMapData}
+        mapData={mapData}
         currentRoomId={gameState.serverData.room_id}
         focusRoomId={focusRoomId}
         gameState={gameState}
@@ -235,7 +236,8 @@ function App() {
               <Button onClick={refresh}>Refresh</Button>
               <FindRoomModal
                 gameState={gameState}
-                mapData={secretMapData}
+                // mapData={secretMapData}
+                mapData={mapData}
                 setFocusRoomId={setFocusRoomId}
                 isShowing={false}
               />
