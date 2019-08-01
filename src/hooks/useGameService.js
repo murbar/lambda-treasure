@@ -18,7 +18,7 @@ const useGameService = (apiKey, initServerData) => {
       console.dir(error);
       const { data } = error.response;
       if (data) {
-        setApiError(error.response.data.errors[0]);
+        setApiError(error.response.data);
       } else {
         setApiError(error.message);
       }
