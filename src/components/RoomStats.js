@@ -47,6 +47,7 @@ const Styles = styled.div`
     span {
       padding: 0.25em 0.5em;
       font-size: 0.8em;
+      font-weight: bold;
     }
   }
   .items {
@@ -64,6 +65,10 @@ const Styles = styled.div`
     }
   }
   .messages {
+    ul {
+      margin: 0;
+      padding-left: 2rem;
+    }
   }
   z-index: 1500;
 `;
@@ -108,7 +113,7 @@ export default function RoomStats({ gameState, takeItem }) {
         )}
         {players.length > 0 && (
           <div className="players">
-            <h3>Players</h3>
+            <h3>Players in this room</h3>
             <div>
               {players.map((m, i) => (
                 <span key={i}>{m}</span>
@@ -119,9 +124,11 @@ export default function RoomStats({ gameState, takeItem }) {
         {messages.length > 0 && (
           <div className="messages">
             <h3>Messages</h3>
-            {messages.map((m, i) => (
-              <div key={i}>{m}</div>
-            ))}
+            <ul>
+              {messages.map((m, i) => (
+                <li key={i}>{m}</li>
+              ))}
+            </ul>
           </div>
         )}
       </OverlayBox>
