@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import styled, { withTheme } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import Navigator from 'components/Navigator';
+import Vignette from 'components/Vignette';
 import useHotKeys from 'hooks/useHotkeys';
 
 const dpr = window.devicePixelRatio || 1;
@@ -269,6 +270,7 @@ function Map({
       onWheel={handleWheel}
     >
       <animated.canvas id="grid-canvas" ref={canvasRef} style={moveSpring} />
+      <Vignette />
       <Navigator
         gameState={gameState}
         isLoading={isLoading}

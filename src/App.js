@@ -20,7 +20,6 @@ import useHotKeys from 'hooks/useHotkeys';
 import useGameService from 'hooks/useGameService';
 import secretMapData from 'secretMapData.json';
 import Loading from 'components/Loading';
-import Vignette from 'components/Vignette';
 import { initGameState, mockGameData, testingMode } from 'config';
 
 const Styles = styled.div`
@@ -29,6 +28,7 @@ const Styles = styled.div`
 
 function App() {
   const [gameState, setGameState] = useLocalStorageState('GAME_STATE', initGameState);
+  const [mapData, setMapData] = useLocalStorageState('MAP_DATA', {});
   const { gameServerData, isLoading, apiError, actions } = useGameService(
     gameState.apiKey,
     gameState.serverData
@@ -181,8 +181,6 @@ function App() {
         isLoading={isLoading}
         callbacks={{ move }}
       />
-
-      <Vignette />
 
       {/* {true && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />} */}
 
