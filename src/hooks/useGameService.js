@@ -29,17 +29,21 @@ const useGameService = (apiKey, initServerData) => {
   // init AND check status to get all game data
   const refresh = useCallback(
     requestWrapper(async () => {
-      const { data: roomData } = await gameService.checkIn();
-      let playerData;
-      setTimeout(async () => {
-        const { data } = await gameService.checkStatus();
-        playerData = data;
-      }, roomData.cooldown * 1000 + 10);
+      const { data } = await gameService.checkIn();
+      console.log(data);
       setGameServerData(prev => ({
         ...prev,
-        ...roomData,
-        ...playerData
+        ...data
       }));
+
+      setTimeout(async () => {
+        const { data } = await gameService.checkStatus();
+        console.log(data);
+        setGameServerData(prev => ({
+          ...prev,
+          ...data
+        }));
+      }, data.cooldown * 1000 + 10);
     }),
     []
   );
