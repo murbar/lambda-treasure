@@ -40,7 +40,6 @@ const Item = styled.div`
     }
     button {
       flex-shrink: 0;
-      text-transform: uppercase;
       padding: 0.25em 0.5em;
       z-index: 1000;
       cursor: pointer;
