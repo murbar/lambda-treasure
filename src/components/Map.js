@@ -5,14 +5,14 @@ import Navigator from 'components/Navigator';
 import Vignette from 'components/Vignette';
 import useHotKeys from 'hooks/useHotkeys';
 
-const dpr = window.devicePixelRatio || 1;
-
-const mapSizePx = '2000';
-
 const wiggle = val => {
   const [min, max] = [-val, val];
   return Math.round(Math.random() * (max - min) + min);
 };
+
+const dpr = window.devicePixelRatio || 1;
+
+const mapSizePx = '2000';
 
 const parseCoordinates = coords => {
   return coords
@@ -78,27 +78,37 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
   // or draw rooms a set distance apart (#px between each coord) and draw from focus room out, only draw as big as window
 
   const drawRoom = useCallback(
-    (x, y, roomId, isCurrentRoom, isFocusRoom) => {
+    (x, y, roomId, isCurrentRoom, isFocusRoom, label) => {
       const ctx = canvasRef.current.getContext('2d');
       ctx.beginPath();
       // yikes!
       ctx.fillStyle = isCurrentRoom
         ? theme.map.currentRoomColor
         : isFocusRoom
-        ? 'white'
+        ? theme.map.focusRoomColor
         : theme.map.roomColor;
-      const radius = isCurrentRoom || isFocusRoom ? mapSize / 100 : mapSize / 110;
-      ctx.arc(x, y, radius, 0, Math.PI * 2, true); // Outer circle
+      const roomRadius = isCurrentRoom || isFocusRoom ? mapSize / 80 : mapSize / 110;
+      ctx.arc(x, y, roomRadius, 0, Math.PI * 2, true); // Outer circle
       ctx.shadowBlur = 0;
       ctx.fill();
-      // label
+
+      // text label
       ctx.font = `bold ${mapSize / 100}px ${theme.font}`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = isCurrentRoom ? 'white' : theme.map.labelColor;
+      ctx.fillStyle = isCurrentRoom ? theme.map.currentRoomLabelColor : theme.map.labelColor;
       ctx.shadowBlur = 3;
       ctx.shadowColor = isCurrentRoom ? 'black' : 'white';
       ctx.fillText(roomId, x, y);
+
+      // color label
+      if (label) {
+        ctx.beginPath();
+        ctx.fillStyle = theme.labels[label];
+        const labelRadius = mapSize / 200;
+        ctx.arc(x - roomRadius * 0.8, y - roomRadius * 0.8, labelRadius, 0, Math.PI * 2, true);
+        ctx.fill();
+      }
     },
     [mapSize, theme]
   );
@@ -206,10 +216,12 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
       const { x, y } = coords[roomId];
       const isCurrentRoom = parseInt(roomId) === currentRoomId;
       const isFocusRoom = parseInt(roomId) === focusRoomId;
-      if (roomId === 77) {
+      const room = mapData[roomId];
+      if ('label' in room) {
+        drawRoom(x, y, roomId, isCurrentRoom, isFocusRoom, room['label']);
+      } else {
+        drawRoom(x, y, roomId, isCurrentRoom, isFocusRoom);
       }
-
-      drawRoom(x, y, roomId, isCurrentRoom, isFocusRoom);
     }
   }, [mapData, currentRoomId, theme, focusRoomId, drawRoom, drawConnection]);
 
