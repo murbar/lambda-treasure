@@ -192,7 +192,7 @@ function App() {
           {/* <Cooldown secs={23} /> */}
           <DisplayTopRight>
             <PlayerStats gameState={gameState} />
-            <RoomStats gameState={gameState} />
+            <RoomStats gameState={gameState} takeItem={takeItem} />
           </DisplayTopRight>
           <DisplayBottomLeft>
             {/* <GameErrors messages={[`No API key, press 'z' to show settings`, 'Another error!']} /> */}
