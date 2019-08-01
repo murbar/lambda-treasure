@@ -55,3 +55,15 @@ export const mockGameData = {
   },
   apiError: null
 };
+
+const initRoomData = {
+  room_id: 0,
+  title: '',
+  description: '',
+  exits: { e: '?', s: '?', w: '?' },
+  coordinates: '',
+  terrain: '',
+  elevation: 0,
+  notes: [],
+  labels: []
+};
