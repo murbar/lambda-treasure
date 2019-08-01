@@ -6,6 +6,7 @@ import OverlayBox from 'components/common/OverlayBox';
 const Styles = styled.div`
   line-height: 1.3;
   font-size: 2rem;
+  max-width: 45rem;
   .room {
     font-family: ${p => p.theme.headingFont};
     font-size: 1.75em;
@@ -61,8 +62,8 @@ export default function RoomStats({ gameState, takeItem }) {
     players
   } = gameState.serverData;
   return (
-    <OverlayBox>
-      <Styles>
+    <Styles>
+      <OverlayBox>
         <div className="room">#{roomId}</div>
         <div className="title">{title}</div>
         <div className="desc">{description}</div>
@@ -101,7 +102,7 @@ export default function RoomStats({ gameState, takeItem }) {
             ))}
           </div>
         )}
-      </Styles>
-    </OverlayBox>
+      </OverlayBox>
+    </Styles>
   );
 }
