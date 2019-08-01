@@ -182,12 +182,7 @@ function App() {
   return (
     <Styles>
       <Header />
-
       <Loading isLoading={isLoading} />
-
-      {apiError && <ApiError message={apiError.errors[0]} />}
-      {!gameState.apiKey && <ApiError message="No API key, press 'z' to show settings" />}
-
       <Map
         mapData={secretMapData}
         // mapData={mapData}
@@ -197,9 +192,9 @@ function App() {
         isLoading={isLoading}
         callbacks={{ move }}
       />
-
+      {apiError && <ApiError message={apiError.errors[0]} />}
+      {!gameState.apiKey && <ApiError message="No API key, update your settings" />}
       {/* {true && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />} */}
-
       {roomLoaded && (
         <>
           <Cooldown secs={gameState.serverData.cooldown} />
@@ -224,7 +219,6 @@ function App() {
           </DisplayBottomLeft>
         </>
       )}
-
       {!roomLoaded && (
         <>
           <DisplayBottomLeft>
@@ -239,7 +233,6 @@ function App() {
           </DisplayBottomLeft>
         </>
       )}
-
       <Footer />
     </Styles>
   );

@@ -24,8 +24,7 @@ export const initServerData = {
 export const initGameState = {
   apiKey: null,
   mapData: null,
-  serverData: initServerData,
-  apiError: null
+  serverData: initServerData
 };
 
 export const testingMode = true;
@@ -53,8 +52,7 @@ export const mockGameData = {
     cooldown: 0,
     errors: [],
     messages: []
-  },
-  apiError: null
+  }
 };
 
 export const initRoomData = {

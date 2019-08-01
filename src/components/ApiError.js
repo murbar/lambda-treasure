@@ -1,26 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import Button from './common/Button';
+import ButtonRow from 'components/common/ButtonRow';
+import OverlayBox from 'components/common/OverlayBox';
 
 const Styles = styled.div`
   position: absolute;
   width: 100%;
-  pointer-events: none;
   display: flex;
   justify-content: center;
   bottom: 30%;
-  span {
-    color: white;
-    border-radius: 1rem;
-    background: rgba(153, 0, 0, 0.9);
-    padding: 2rem 4rem;
-    font-size: 2em;
+  font-size: 1.25em;
+  > div {
+    min-width: 35rem;
   }
 `;
 
 export default function ApiError({ message }) {
-  return (
+  const [showing, setShowing] = useState(true);
+
+  return showing ? (
     <Styles>
-      <span>{message}</span>
+      <OverlayBox>
+        <h2>API error :(</h2>
+        {message}
+        <ButtonRow>
+          <Button onClick={() => setShowing(false)}>Ok</Button>
+        </ButtonRow>
+      </OverlayBox>
     </Styles>
-  );
+  ) : null;
 }
