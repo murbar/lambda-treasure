@@ -9,6 +9,7 @@ export default styled.button`
   background: ${p => p.theme.colors.primary};
   color: white;
   margin-right: 1rem;
+  cursor: pointer;
   &:hover {
     background: white;
     color: ${p => p.theme.colors.primary};
