@@ -9,6 +9,11 @@ const dpr = window.devicePixelRatio || 1;
 
 const mapSizePx = '2000';
 
+const wiggle = val => {
+  const [min, max] = [-val, val];
+  return Math.round(Math.random() * (max - min) + min);
+};
+
 const parseCoordinates = coords => {
   return coords
     .slice(1, coords.length - 1)
@@ -149,7 +154,7 @@ function Map({
       const scale = 0.9;
       const xScaled = Math.ceil(scaleCenter(xNorm, scale, WIDTH / dpr));
       const yScaled = Math.ceil(scaleCenter(yNorm, scale, HEIGHT / dpr));
-      const coords = { x: xScaled, y: yScaled };
+      const coords = { x: xScaled + wiggle(4), y: yScaled + wiggle(4) };
       roomCoords.current[roomId] = coords;
 
       const isCurrentRoom = parseInt(roomId) === currentRoomId;
