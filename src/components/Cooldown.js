@@ -3,10 +3,10 @@ import styled from 'styled-components';
 
 const Styles = styled.div`
   position: absolute;
-  bottom: 25%;
+  bottom: 15%;
   font-family: ${p => p.theme.headingFont};
-  font-size: 6rem;
-  color: orange;
+  font-size: 8vw;
+  color: darkred;
   pointer-events: none;
   width: 100%;
   text-align: center;
