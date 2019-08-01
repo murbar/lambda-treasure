@@ -24,7 +24,7 @@ import Vignette from 'components/Vignette';
 import { initGameState, mockGameData, testingMode } from 'config';
 
 const Styles = styled.div`
-  min-height: 100vh;
+  min-height: 100%;
 `;
 
 function App() {
