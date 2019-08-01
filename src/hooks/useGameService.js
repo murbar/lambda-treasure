@@ -32,7 +32,7 @@ const useGameService = (apiKey, initServerData) => {
       const { data: roomData } = await gameService.checkIn();
       let playerData;
       setTimeout(async () => {
-        const { data } = await gameService.checkIn();
+        const { data } = await gameService.checkStatus();
         playerData = data;
       }, roomData.cooldown * 1000 + 10);
       setGameServerData(prev => ({
