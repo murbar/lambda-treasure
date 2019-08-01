@@ -8,6 +8,7 @@ const Styles = styled.div`
   border-radius: 1rem;
   margin-bottom: 1rem;
   position: relative;
+  pointer-events: auto;
   &:last-child {
     margin-bottom: 0;
   }
