@@ -6,7 +6,7 @@ import useHotKeys from 'hooks/useHotkeys';
 
 const dpr = window.devicePixelRatio || 1;
 
-const mapSizePx = '2500';
+const mapSizePx = '2000';
 
 const parseCoordinates = coords => {
   return coords
@@ -80,7 +80,7 @@ function Map({
         : isHighlightRoom
         ? 'white'
         : theme.map.roomColor;
-      const radius = isCurrentRoom || isHighlightRoom ? mapSize / 85 : mapSize / 95;
+      const radius = isCurrentRoom || isHighlightRoom ? mapSize / 100 : mapSize / 110;
       ctx.arc(x, y, radius, 0, Math.PI * 2, true); // Outer circle
       ctx.shadowBlur = 0;
       ctx.fill();
@@ -180,8 +180,6 @@ function Map({
     const connections = roomConnections.current;
     const coords = roomCoords.current;
 
-    console.log('drawing map');
-
     // draw connections
     for (const roomId in connections) {
       const localConnections = connections[roomId];
@@ -206,19 +204,19 @@ function Map({
     {
       ArrowUp: e => {
         e.preventDefault();
-        setFocus(prev => ({ ...prev, y: prev.y - 25 }));
+        setFocus(prev => ({ ...prev, y: prev.y - 40 }));
       },
       ArrowRight: e => {
         e.preventDefault();
-        setFocus(prev => ({ ...prev, x: prev.x + 25 }));
+        setFocus(prev => ({ ...prev, x: prev.x + 40 }));
       },
       ArrowDown: e => {
         e.preventDefault();
-        setFocus(prev => ({ ...prev, y: prev.y + 25 }));
+        setFocus(prev => ({ ...prev, y: prev.y + 40 }));
       },
       ArrowLeft: e => {
         e.preventDefault();
-        setFocus(prev => ({ ...prev, x: prev.x - 25 }));
+        setFocus(prev => ({ ...prev, x: prev.x - 40 }));
       }
       // o: e => {
       //   e.preventDefault();
