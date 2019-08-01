@@ -14,7 +14,7 @@ const Styles = styled.div`
   position: relative;
   display: inline-block;
   vertical-align: baseline;
-  margin-right: 1rem;
+  margin-left: 1rem;
 `;
 
 const Label = styled.div`
@@ -31,10 +31,12 @@ const Label = styled.div`
 `;
 
 const Picker = styled.div`
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1rem;
   position: absolute;
   top: 0;
   left: -3rem;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   ${Label} {
     margin-bottom: 0.5rem;
     &:last-child {
