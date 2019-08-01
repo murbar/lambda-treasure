@@ -109,9 +109,9 @@ function App() {
     });
   };
 
-  const checkStatus = () => {
+  const refresh = () => {
     checkCooldown(() => {
-      actions.checkPlayerStatus();
+      actions.refresh();
     });
   };
 
@@ -179,7 +179,7 @@ function App() {
         highlightRoomId={418}
         gameState={gameState}
         isLoading={isLoading}
-        callbacks={{ move, takeItem, dropItem, sellItem, checkStatus, fakeRequest }}
+        callbacks={{ move }}
       />
 
       <Vignette />
@@ -200,7 +200,7 @@ function App() {
             <Shop gameState={gameState} sellItem={sellItem} />
             <Inventory gameState={gameState} dropItem={dropItem} />
             <ButtonRow>
-              <Button onClick={checkStatus}>Get status</Button>
+              <Button onClick={refresh}>Refresh</Button>
               <SettingsModal
                 gameState={gameState}
                 callbacks={{ setApiKey, resetGame }}
@@ -215,7 +215,7 @@ function App() {
         <>
           <DisplayBottomLeft>
             <ButtonRow>
-              <Button onClick={checkStatus}>Get status</Button>
+              <Button onClick={refresh}>Refresh</Button>
               <SettingsModal
                 gameState={gameState}
                 callbacks={{ setApiKey, resetGame }}
