@@ -71,7 +71,8 @@ const useGameService = (apiKey, initServerData) => {
       const { data } = await gameService.move(direction, nextRoomId);
       setGameServerData(prev => ({
         ...prev,
-        ...data
+        ...data,
+        lastMoveDirection: direction
       }));
     }),
     []

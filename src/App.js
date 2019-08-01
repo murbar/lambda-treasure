@@ -20,7 +20,8 @@ import useHotKeys from 'hooks/useHotkeys';
 import useGameService from 'hooks/useGameService';
 import secretMapData from 'secretMapData.json';
 import Loading from 'components/Loading';
-import { initGameState, mockGameData, testingMode } from 'config';
+import { initGameState, mockGameData, testingMode, initRoomData } from 'config';
+import { updateMapData } from 'helpers';
 
 const Styles = styled.div`
   min-height: 100%;
@@ -131,13 +132,27 @@ function App() {
     }
   }, [gameState, setGameState]);
 
-  // set useGameService data to game state
+  // set useGameService data to game state, records room visits
   useEffect(() => {
-    setGameState(prev => ({
-      ...prev,
-      serverData: gameServerData
-    }));
-  }, [gameServerData, setGameState]);
+    let prevServerData;
+
+    setGameState(prev => {
+      prevServerData = prev.serverData;
+      return {
+        ...prev,
+        serverData: gameServerData
+      };
+    });
+
+    if ('room_id' in gameServerData) {
+      setMapData(prev => {
+        const lastRoomId = 'room_id' in prevServerData ? prevServerData.room_id : null;
+        const thisRoomId = gameServerData['room_id'];
+        const move = gameServerData.lastMoveDirection;
+        return updateMapData(prev, gameServerData, lastRoomId, thisRoomId, move);
+      });
+    }
+  }, [gameServerData, setGameState, setMapData]);
 
   // increment cool down on api response error
   useEffect(() => {
@@ -175,6 +190,7 @@ function App() {
 
       <Map
         mapData={secretMapData}
+        // mapData={mapData}
         currentRoomId={gameState.serverData.room_id}
         highlightRoomId={418}
         gameState={gameState}

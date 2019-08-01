@@ -24,7 +24,7 @@ const getCoordsMaxMinXY = map => {
   let [minX, maxX, minY, maxY] = [1000, 0, 1000, 0];
   for (let roomId in map) {
     const room = map[roomId];
-    const [x, y] = parseCoordinates(room.coords);
+    const [x, y] = parseCoordinates(room.coordinates);
     if (x < minX) minX = x;
     if (x > maxX) maxX = x;
     if (y < minY) minY = y;
@@ -47,8 +47,6 @@ const Styles = styled.div`
     z-index: -1000;
     position: absolute;
     width: ${mapSizePx}px;
-    ${'' /* top: calc(50% - ${p => p.focus.y}px); */}
-    ${'' /* left: calc(50% - ${p => p.focus.x}px); */}
     transform: rotate(-2.5deg);
   }
 `;
@@ -70,6 +68,12 @@ function Map({
   const roomCoords = useRef({});
   const roomConnections = useRef({});
   const [focus, setFocus] = useState(initFocus);
+
+  // set map size dynamically based on dimensinons of map data coords
+  // get max dimension set map size some multiple of it in pix?
+  // const [maxX, minX, maxY, minY] = getCoordsMaxMinXY(mapData);
+  // console.log(Math.max(maxX - minX, maxY - minY));
+  // or draw rooms a set distance apart (#px between each coord) and draw from focus room out, only draw as big as window
 
   const drawRoom = useCallback(
     (x, y, roomId, isCurrentRoom, isHighlightRoom) => {
@@ -135,7 +139,7 @@ function Map({
       const room = mapData[roomId];
 
       // coords
-      const [rawX, rawY] = parseCoordinates(room.coords);
+      const [rawX, rawY] = parseCoordinates(room.coordinates);
       const [xNorm, yNorm] = [
         (normalizeNum(rawX, maxX, minX) * WIDTH) / dpr,
         // 0, 0 is at bottom, left of grid
@@ -158,15 +162,18 @@ function Map({
       for (const neighbor in room.exits) {
         const connections = roomConnections.current;
         const neighborId = room.exits[neighbor];
-        // store connections under room with smaller id to avoid dupes
-        if (neighborId < roomId) {
-          const existing = neighborId in connections ? connections[neighborId] : [];
-          if (!existing.includes(roomId)) existing.push(roomId);
-          connections[neighborId] = existing;
-        } else {
-          const existing = roomId in connections ? connections[roomId] : [];
-          if (!existing.includes(neighborId)) existing.push(neighborId);
-          connections[roomId] = existing;
+
+        if (neighborId !== '?') {
+          // store connections under room with smaller id to avoid dupes
+          if (neighborId < roomId) {
+            const existing = neighborId in connections ? connections[neighborId] : [];
+            if (!existing.includes(roomId)) existing.push(roomId);
+            connections[neighborId] = existing;
+          } else {
+            const existing = roomId in connections ? connections[roomId] : [];
+            if (!existing.includes(neighborId)) existing.push(neighborId);
+            connections[roomId] = existing;
+          }
         }
       }
     }
@@ -249,7 +256,6 @@ function Map({
   };
 
   const handleWheel = e => {
-    e.preventDefault();
     const { deltaX, deltaY } = e;
     setFocus(prev => ({ x: prev.x + deltaX, y: prev.y + deltaY }));
   };

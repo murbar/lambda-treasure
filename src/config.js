@@ -17,7 +17,8 @@ export const initServerData = {
   status: [],
   cooldown: 0,
   errors: [],
-  messages: []
+  messages: [],
+  lastMoveDirection: ''
 };
 
 export const initGameState = {
@@ -56,11 +57,11 @@ export const mockGameData = {
   apiError: null
 };
 
-const initRoomData = {
+export const initRoomData = {
   room_id: 0,
   title: '',
   description: '',
-  exits: { e: '?', s: '?', w: '?' },
+  exits: {},
   coordinates: '',
   terrain: '',
   elevation: 0,
