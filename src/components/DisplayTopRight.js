@@ -3,9 +3,13 @@ import styled from 'styled-components';
 
 const Styles = styled.div`
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   top: 2rem;
   right: 2rem;
-  max-width: 50rem;
+  left: 2rem;
+  z-index: 1000;
 `;
 
 export default function DisplayTopRight({ children }) {

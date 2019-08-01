@@ -3,10 +3,11 @@ import styled from 'styled-components';
 
 const Styles = styled.div`
   position: absolute;
+  display: flex;
+  flex-direction: column;
   left: 2rem;
+  right: 2rem;
   bottom: 2rem;
-  width: 90%;
-  max-width: 50rem;
   z-index: 1000;
 `;
 
