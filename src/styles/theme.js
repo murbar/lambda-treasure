@@ -30,6 +30,9 @@ const theme = {
   queue: {
     bgColor: addAlpha(colors.cream, 0.8)
   },
+  inventory: {
+    itemBgGradient: `radial-gradient(ellipse at center, lightskyblue 0%, dodgerblue 100%);`
+  },
   media
 };
 
