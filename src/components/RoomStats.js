@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from 'components/common/Button';
+import RoomLabel from 'components/RoomLabel';
 import OverlayBox from 'components/common/OverlayBox';
 
 const Styles = styled.div`
@@ -14,6 +15,8 @@ const Styles = styled.div`
     font-family: ${p => p.theme.headingFont};
     font-size: 1.75em;
     line-height: 1;
+    display: flex;
+    align-items: center;
   }
   .title {
     font-size: 1.25em;
@@ -48,6 +51,7 @@ const Styles = styled.div`
       padding: 0.25em 0.5em;
       font-size: 0.8em;
       font-weight: bold;
+      color: dodgerblue;
     }
   }
   .items {
@@ -73,7 +77,7 @@ const Styles = styled.div`
   z-index: 1500;
 `;
 
-export default function RoomStats({ gameState, takeItem }) {
+export default function RoomStats({ gameState, mapData, takeItem, setLabel }) {
   const {
     messages,
     errors,
@@ -84,10 +88,14 @@ export default function RoomStats({ gameState, takeItem }) {
     items,
     players
   } = gameState.serverData;
+  const mapDataRoom = mapData[roomId];
+
   return (
     <Styles>
       <OverlayBox>
-        <div className="room">#{roomId}</div>
+        <div className="room">
+          <RoomLabel label={mapDataRoom.label} setLabel={l => setLabel(roomId, l)} /> #{roomId}
+        </div>
         <div className="title">{title}</div>
         <div className="desc">{description}</div>
         <div className="exits">

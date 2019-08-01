@@ -16,7 +16,6 @@ import ButtonRow from 'components/common/ButtonRow';
 import Button from 'components/common/Button';
 import DisplayBottomLeft from 'components/DisplayBottomLeft';
 import DisplayTopRight from 'components/DisplayTopRight';
-import Shop from 'components/Shop';
 import useHotKeys from 'hooks/useHotkeys';
 import useGameService from 'hooks/useGameService';
 import secretMapData from 'secretMapData.json';
@@ -118,6 +117,19 @@ function App() {
     });
   };
 
+  const setRoomLabel = (roomId, label) => {
+    // try {
+    setMapData(prev => {
+      // const room = prev[roomId]
+      prev[roomId].label = label;
+      return { ...prev };
+    });
+
+    // } catch (error) {
+    //   console.warn
+    // }
+  };
+
   // decrement cool down once per second
   useEffect(() => {
     if (gameState.serverData && gameState.serverData.cooldown > 0) {
@@ -201,26 +213,34 @@ function App() {
         <>
           <Cooldown secs={gameState.serverData.cooldown} />
           {/* <Cooldown secs={23} /> */}
+          <Inventory
+            gameState={gameState}
+            callbacks={{ dropItem, sellItem, examineItem: item => console.log(item) }}
+          />
           <DisplayTopRight>
             <PlayerStats gameState={gameState} />
-            <RoomStats gameState={gameState} takeItem={takeItem} />
+            <RoomStats
+              gameState={gameState}
+              takeItem={takeItem}
+              mapData={mapData}
+              setLabel={setRoomLabel}
+            />
           </DisplayTopRight>
           <DisplayBottomLeft>
             {/* <GameErrors messages={[`No API key, press 'z' to show settings`, 'Another error!']} /> */}
             <GameErrors messages={gameState.serverData.errors} />
-            <Shop gameState={gameState} sellItem={sellItem} />
-            <Inventory gameState={gameState} dropItem={dropItem} />
             <ButtonRow>
               <Button onClick={refresh}>Refresh</Button>
-              <SettingsModal
-                gameState={gameState}
-                callbacks={{ setApiKey, resetGame }}
-                show={false}
-              />
               <FindRoomModal
                 gameState={gameState}
                 mapData={secretMapData}
                 setFocusRoomId={setFocusRoomId}
+                isShowing={false}
+              />
+              <SettingsModal
+                gameState={gameState}
+                callbacks={{ setApiKey, resetGame }}
+                isShowing={false}
               />
             </ButtonRow>
           </DisplayBottomLeft>
