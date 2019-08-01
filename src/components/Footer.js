@@ -7,11 +7,11 @@ const StyledDiv = styled.div`
   bottom: 1rem;
   right: 1rem;
   text-align: right;
-  font-size: 1;
+  font-size: 0.9em;
   line-height: 1.4;
   text-shadow: 0 0 1px white, 0 0 1rem white;
   font-weight: bold;
-  transform: scale(0.8);
+  transform: scale(0.6);
   transform-origin: bottom right;
   transition: all 0.25s;
   z-index: 1500;
