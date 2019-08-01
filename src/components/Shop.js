@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import OverlayBox from 'components/common/OverlayBox';
 import Button from 'components/common/Button';
 
-const Styles = styled.div``;
+const Styles = styled.div`
+  pointer-events: auto;
+`;
 
 export default function Shop({ gameState, sellItem }) {
   const inShop = gameState.serverData.title === 'Shop';

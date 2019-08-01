@@ -7,6 +7,7 @@ const Styles = styled.div`
   line-height: 1.3;
   font-size: 2rem;
   max-width: 45rem;
+  pointer-events: auto;
   .room {
     font-family: ${p => p.theme.headingFont};
     font-size: 1.75em;

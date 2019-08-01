@@ -8,6 +8,7 @@ const Styles = styled.div`
   transform: scale(0.6);
   transform-origin: bottom left;
   transition: all 0.25s;
+  pointer-events: auto;
   &:hover {
     transform: scale(1);
   }

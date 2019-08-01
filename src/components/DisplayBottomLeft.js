@@ -9,6 +9,7 @@ const Styles = styled.div`
   right: 2rem;
   bottom: 2rem;
   z-index: 1000;
+  pointer-events: none;
 `;
 
 export default function DisplayBottomLeft({ children }) {

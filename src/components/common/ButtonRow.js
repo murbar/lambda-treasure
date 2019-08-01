@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 const Styles = styled.div`
   margin-top: 2rem;
+  pointer-events: auto;
 `;
 
 export default function ButtonRow({ children }) {
