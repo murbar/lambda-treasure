@@ -94,7 +94,7 @@ export default function RoomStats({ gameState, mapData, takeItem, setLabel }) {
     <Styles>
       <OverlayBox>
         <div className="room">
-          <RoomLabel label={mapDataRoom.label} setLabel={l => setLabel(roomId, l)} /> #{roomId}
+          #{roomId} <RoomLabel label={mapDataRoom.label} setLabel={l => setLabel(roomId, l)} />
         </div>
         <div className="title">{title}</div>
         <div className="desc">{description}</div>
