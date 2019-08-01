@@ -12,17 +12,27 @@ const Styles = styled.div`
   padding: 1rem;
 `;
 
-export default function SettingsModal({ gameState, mapData, setFocus, isShowing = false }) {
+export default function SettingsModal({ gameState, mapData, setFocusRoomId, isShowing = false }) {
   const [room, setRoom] = useState(gameState.serverData.room_id);
   const [showModal, setShowModal] = useState(isShowing);
+  const [statusMessage, setStatusMessage] = useState('');
 
   useEffect(() => {
     setShowModal(isShowing);
   }, [isShowing]);
 
   const save = () => {
-    setFocus(room);
-    // setShowModal(false);
+    const id = parseInt(room);
+    if (id in mapData) {
+      setFocusRoomId(parseInt(room));
+      setShowModal(false);
+    } else {
+      setStatusMessage(`Your map does not include room ${room}.`);
+    }
+  };
+
+  const cancel = e => {
+    setShowModal(false);
   };
 
   const handleChange = e => {
@@ -35,7 +45,7 @@ export default function SettingsModal({ gameState, mapData, setFocus, isShowing 
 
   return (
     <>
-      <Button onClick={() => setShowModal(true)}>Find Room</Button>
+      <Button onClick={() => setShowModal(true)}>Focus</Button>
       {showModal && (
         <FullScreenModal>
           <OverlayBox>
@@ -52,8 +62,10 @@ export default function SettingsModal({ gameState, mapData, setFocus, isShowing 
                   onKeyPress={handleKeyPress}
                 />
               </FormField>
+              {statusMessage && <div>{statusMessage}</div>}
               <ButtonRow>
                 <Button onClick={save}>Find</Button>
+                <Button onClick={cancel}>Cancel</Button>
               </ButtonRow>
             </Styles>
           </OverlayBox>

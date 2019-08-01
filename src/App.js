@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import useLocalStorageState from 'hooks/useLocalStorageState';
 import Header from 'components/Header';
@@ -7,6 +7,7 @@ import RoomStats from 'components/RoomStats';
 import PlayerStats from 'components/PlayerStats';
 import Cooldown from 'components/Cooldown';
 import SettingsModal from 'components/SettingsModal';
+import FindRoomModal from 'components/FindRoomModal';
 import Footer from 'components/Footer';
 import ApiError from 'components/ApiError';
 import GameErrors from 'components/GameErrors';
@@ -34,6 +35,7 @@ function App() {
     gameState.apiKey,
     gameState.serverData
   );
+  const [focusRoomId, setFocusRoomId] = useState(null);
   const roomLoaded = gameState.serverData.room_id !== null;
 
   const setApiKey = apiKey => {
@@ -187,7 +189,7 @@ function App() {
         mapData={secretMapData}
         // mapData={mapData}
         currentRoomId={gameState.serverData.room_id}
-        highlightRoomId={418}
+        focusRoomId={focusRoomId}
         gameState={gameState}
         isLoading={isLoading}
         callbacks={{ move }}
@@ -214,6 +216,11 @@ function App() {
                 gameState={gameState}
                 callbacks={{ setApiKey, resetGame }}
                 show={false}
+              />
+              <FindRoomModal
+                gameState={gameState}
+                mapData={secretMapData}
+                setFocusRoomId={setFocusRoomId}
               />
             </ButtonRow>
           </DisplayBottomLeft>

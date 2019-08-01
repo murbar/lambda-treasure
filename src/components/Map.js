@@ -58,21 +58,18 @@ const Styles = styled.div`
 
 const initFocus = { x: mapSizePx / 2, y: mapSizePx / 2 };
 
-function Map({
-  mapData,
-  currentRoomId = 0,
-  highlightRoomId,
-  gameState,
-  isLoading,
-  callbacks,
-  theme
-}) {
+function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, callbacks, theme }) {
   const canvasRef = useRef();
   const [mapSize, setMapSize] = useState(mapSizePx);
   const currentRoomCoords = useRef();
   const roomCoords = useRef({});
   const roomConnections = useRef({});
   const [focus, setFocus] = useState(initFocus);
+
+  useEffect(() => {
+    const focusCoords = roomCoords.current[focusRoomId];
+    if (focusCoords) setFocus(focusCoords);
+  }, [focusRoomId]);
 
   // set map size dynamically based on dimensinons of map data coords
   // get max dimension set map size some multiple of it in pix?
@@ -81,16 +78,16 @@ function Map({
   // or draw rooms a set distance apart (#px between each coord) and draw from focus room out, only draw as big as window
 
   const drawRoom = useCallback(
-    (x, y, roomId, isCurrentRoom, isHighlightRoom) => {
+    (x, y, roomId, isCurrentRoom, isFocusRoom) => {
       const ctx = canvasRef.current.getContext('2d');
       ctx.beginPath();
       // yikes!
       ctx.fillStyle = isCurrentRoom
         ? theme.map.currentRoomColor
-        : isHighlightRoom
+        : isFocusRoom
         ? 'white'
         : theme.map.roomColor;
-      const radius = isCurrentRoom || isHighlightRoom ? mapSize / 100 : mapSize / 110;
+      const radius = isCurrentRoom || isFocusRoom ? mapSize / 100 : mapSize / 110;
       ctx.arc(x, y, radius, 0, Math.PI * 2, true); // Outer circle
       ctx.shadowBlur = 0;
       ctx.fill();
@@ -204,14 +201,17 @@ function Map({
     }
 
     // draw rooms
+    // console.log('drawing rooms');
     for (const roomId in mapData) {
       const { x, y } = coords[roomId];
       const isCurrentRoom = parseInt(roomId) === currentRoomId;
-      const isHighlightRoom = parseInt(roomId) === highlightRoomId;
+      const isFocusRoom = parseInt(roomId) === focusRoomId;
+      if (roomId === 77) {
+      }
 
-      drawRoom(x, y, roomId, isCurrentRoom, isHighlightRoom);
+      drawRoom(x, y, roomId, isCurrentRoom, isFocusRoom);
     }
-  }, [mapData, currentRoomId, theme, highlightRoomId, drawRoom, drawConnection]);
+  }, [mapData, currentRoomId, theme, focusRoomId, drawRoom, drawConnection]);
 
   useHotKeys(
     {
