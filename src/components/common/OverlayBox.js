@@ -7,6 +7,7 @@ const Styles = styled.div`
   box-shadow: ${p => p.theme.hudShadow};
   border-radius: 1rem;
   margin-bottom: 1rem;
+  position: relative;
   &:last-child {
     margin-bottom: 0;
   }
