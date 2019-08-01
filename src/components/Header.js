@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 const Styles = styled.header`
   position: absolute;
+  z-index: 1500;
   h1 {
     margin: 2rem;
     line-height: 1;
@@ -10,7 +11,12 @@ const Styles = styled.header`
     text-shadow: 0 0 1rem white, 0 0 1px white;
     color: #222;
     text-align: center;
-    transform: rotate(-2.5deg);
+    transform-origin: top left;
+    transform: rotate(-2.5deg) scale(0.5);
+    transition: all 0.25s;
+    &:hover {
+      transform: rotate(-2.5deg) scale(1);
+    }
   }
 `;
 
