@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import useLocalStorageState from 'hooks/useLocalStorageState';
 import Header from 'components/Header';
@@ -170,13 +170,13 @@ function App() {
 
       <Loading isLoading={isLoading} />
 
-      {apiError && <ApiError message={JSON.stringify(apiError)} />}
+      {apiError && <ApiError message={apiError.errors[0]} />}
       {!gameState.apiKey && <ApiError message="No API key, press 'z' to show settings" />}
 
       <Map
         mapData={secretMapData}
         currentRoomId={gameState.serverData.room_id}
-        highlightRoomId={329}
+        highlightRoomId={418}
         gameState={gameState}
         isLoading={isLoading}
         callbacks={{ move, takeItem, dropItem, sellItem, checkStatus, fakeRequest }}
@@ -199,6 +199,21 @@ function App() {
             <GameErrors messages={gameState.serverData.errors} />
             <Shop gameState={gameState} sellItem={sellItem} />
             <Inventory gameState={gameState} dropItem={dropItem} />
+            <ButtonRow>
+              <Button onClick={checkStatus}>Get status</Button>
+              <SettingsModal
+                gameState={gameState}
+                callbacks={{ setApiKey, resetGame }}
+                show={false}
+              />
+            </ButtonRow>
+          </DisplayBottomLeft>
+        </>
+      )}
+
+      {!roomLoaded && (
+        <>
+          <DisplayBottomLeft>
             <ButtonRow>
               <Button onClick={checkStatus}>Get status</Button>
               <SettingsModal
