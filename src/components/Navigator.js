@@ -138,7 +138,7 @@ const QueueItems = styled.div`
 export default function Navigator({ gameState, callbacks, isLoading }) {
   const { exits } = gameState.serverData;
   const { move } = callbacks;
-  const moveQueue = useQueue(['n', 'n', 'w', 'e', 'n', 'n', 'w', 'e', 'n', 'n', 'w', 'e']);
+  const moveQueue = useQueue();
   const [queueRunning, setQueueRunning] = useState(false);
   const queueTimer = useRef(null);
   const isShiftPressed = useKeyDown('Shift');
