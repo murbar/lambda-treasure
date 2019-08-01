@@ -247,11 +247,13 @@ function Map({
     }
   };
 
+  const handleWheel = e => {
+    e.preventDefault();
+    const { deltaX, deltaY } = e;
+    setFocus(prev => ({ x: prev.x + deltaX, y: prev.y + deltaY }));
+  };
+
   const moveSpring = useSpring({
-    from: {
-      top: `calc(50% - 100px)`,
-      left: `calc(50% - 100px)`
-    },
     to: {
       top: `calc(50% - ${focus.y}px)`,
       left: `calc(50% - ${focus.x}px)`
@@ -264,6 +266,7 @@ function Map({
       onMouseMove={handleMouseMove}
       onMouseDown={preventClickDefault}
       onMouseUp={preventClickDefault}
+      onWheel={handleWheel}
     >
       <animated.canvas id="grid-canvas" ref={canvasRef} style={moveSpring} />
       <Navigator
