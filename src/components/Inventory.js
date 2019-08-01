@@ -1,77 +1,117 @@
 import React from 'react';
 import styled from 'styled-components';
-import OverlayBox from 'components/common/OverlayBox';
 import Button from 'components/common/Button';
 
-const Styles = styled.div`
-  max-width: 45rem;
-  transform: scale(0.6);
-  transform-origin: bottom left;
-  transition: all 0.25s;
-  pointer-events: auto;
-  &:hover {
-    transform: scale(1);
-  }
-`;
 const Items = styled.div`
   display: flex;
+  flex-flow: column;
 `;
 
 const Item = styled.div`
+  transform: rotate(10deg);
+  transform-origin: bottom left;
   display: flex;
+  flex-shrink: 0;
   justify-content: center;
   align-items: center;
-  width: 8rem;
-  height: 8rem;
-  background: ${p => p.theme.colors.darkCream};
+  width: 12rem;
+  height: 4rem;
+  background: ${p => p.theme.inventory.itemBgGradient};
   line-height: 1;
+  color: white;
   font-weight: bold;
+  font-size: 0.8em;
   border-radius: 0.5rem;
   position: relative;
-  margin-right: 0.75rem;
+  margin-bottom: 0.75rem;
   text-transform: uppercase;
   text-align: center;
   cursor: default;
-  button {
-    display: none;
-  }
-  &:hover button {
-    text-transform: uppercase;
+  transition: all 0.25s;
+  .actions {
     position: absolute;
-    top: -1.25rem;
-    right: -1.25rem;
-    padding: 0.25em 0.5em;
+    top: -0.5rem;
+    left: 10.5rem;
+    text-align: left;
+    display: none;
+    padding: 2rem;
+    &:hover {
+      display: block;
+    }
+    button {
+      flex-shrink: 0;
+      text-transform: uppercase;
+      padding: 0.25em 0.5em;
+      z-index: 1000;
+      cursor: pointer;
+      font-size: 1em;
+      margin-bottom: 0.5rem;
+    }
+  }
+  &:hover .actions {
     display: block;
-    z-index: 1000;
-    cursor: pointer;
-    border-radius: 50%;
-    font-weight: bold;
-    font-size: 1em;
   }
 `;
 
-export default function Inventory({ gameState, dropItem }) {
+const Styles = styled.div`
+  max-width: 45rem;
+  transform: scale(0.6) translateX(-5rem);
+  transform-origin: top left;
+  transition: all 0.25s;
+  pointer-events: auto;
+  padding: 1rem;
+  border-radius: 1rem 1rem 0 0;
+  position: absolute;
+  left: 0;
+  top: 10rem;
+
+  h2 {
+    transform: rotate(10deg);
+    transform-origin: bottom left;
+    text-align: right;
+    transition: all 0.25s;
+  }
+  &:hover {
+    background: ${p => p.theme.queue.bgColor};
+    h2 {
+      transform: rotate(0);
+    }
+    transform: scale(1) translateX(0);
+    ${Item} {
+      transform: rotate(0);
+    }
+  }
+`;
+
+export default function Inventory({ gameState, callbacks }) {
   const { inventory } = gameState.serverData;
+  const { examineItem, dropItem, sellItem } = callbacks;
   const count = inventory.length;
-  return (
+  const inShop = gameState.serverData.title === 'Shop';
+
+  return count > 0 ? (
     <Styles>
-      <OverlayBox>
-        <h2>Inventory</h2>
-        {count > 0 ? (
-          <Items>
-            {inventory.map((item, i) => (
-              <Item key={i} title={item}>
-                {item}
-                <Button onClick={() => dropItem(item)} title={`Drop ${item}`}>
-                  X
+      <h2>Inventory</h2>
+      <Items>
+        {inventory.map((item, i) => (
+          <Item key={i} title={item}>
+            {item}
+            <div className="actions">
+              <Button onClick={() => examineItem(item)} title={`Examine ${item}`}>
+                Examine
+              </Button>
+              <Button onClick={() => dropItem(item)} title={`Drop ${item}`}>
+                Drop
+              </Button>
+              {inShop && (
+                <Button onClick={() => sellItem(item)} title={`Sell ${item}`}>
+                  Sell
                 </Button>
-              </Item>
-            ))}
-          </Items>
-        ) : (
-          <div>Your inventory is empty.</div>
-        )}
-      </OverlayBox>
+              )}
+            </div>
+          </Item>
+        ))}
+      </Items>
     </Styles>
-  );
+  ) : null;
 }
