@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import OverlayBox from 'components/common/OverlayBox';
 import Button from 'components/common/Button';
 
-const Styles = styled.div``;
+const Styles = styled.div`
+  max-width: 45rem;
+`;
 const Items = styled.div`
   display: flex;
 `;
@@ -45,8 +47,8 @@ export default function Inventory({ gameState, dropItem }) {
   const { inventory } = gameState.serverData;
   const count = inventory.length;
   return (
-    <OverlayBox>
-      <Styles>
+    <Styles>
+      <OverlayBox>
         <h2>Inventory</h2>
         {count > 0 ? (
           <Items>
@@ -62,7 +64,7 @@ export default function Inventory({ gameState, dropItem }) {
         ) : (
           <div>Your inventory is empty.</div>
         )}
-      </Styles>
-    </OverlayBox>
+      </OverlayBox>
+    </Styles>
   );
 }
