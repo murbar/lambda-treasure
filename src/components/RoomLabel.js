@@ -23,7 +23,7 @@ const Label = styled.div`
   height: 2.6rem;
   background: ${p => (p.color === 'none' ? 'transparent' : p.color)};
   border-radius: 50%;
-  border: 0.6rem solid ${p => (p.color === 'none' ? '#222' : p.color)};
+  border: 0.3rem solid ${p => (p.color === 'none' ? '#222' : p.color)};
   cursor: pointer;
   &:hover {
     background: transparent;
