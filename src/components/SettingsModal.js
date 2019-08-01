@@ -12,7 +12,7 @@ const Styles = styled.div`
   padding: 1rem;
 `;
 
-export default function SettingsModal({ gameState, callbacks, isShowing }) {
+export default function SettingsModal({ gameState, callbacks, isShowing = false }) {
   const [key, setKey] = useState(gameState.apiKey);
   const [showModal, setShowModal] = useState(isShowing);
 
