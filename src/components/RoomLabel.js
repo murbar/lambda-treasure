@@ -61,11 +61,15 @@ export default function RoomLabel({ label = null, setLabel }) {
       {label ? (
         <Label
           color={labelsMap[labelChoice].color}
-          title={label ? `${labelsMap[labelChoice].name} label` : 'No label'}
+          title={`${labelsMap[labelChoice].name} label`}
           onClick={() => setShowPicker(prev => !prev)}
         />
       ) : (
-        <Label color="none" title="No label" onClick={() => setShowPicker(prev => !prev)} />
+        <Label
+          color="none"
+          title="Set a room label?"
+          onClick={() => setShowPicker(prev => !prev)}
+        />
       )}
       {showPicker && (
         <Picker>
@@ -99,6 +103,7 @@ export default function RoomLabel({ label = null, setLabel }) {
             title={`${labelsMap['purple'].name} label`}
             onClick={() => set('purple')}
           />
+          <Label color="none" title="No label" onClick={() => set(null)} />
         </Picker>
       )}
     </Styles>
