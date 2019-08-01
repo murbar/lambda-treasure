@@ -111,6 +111,12 @@ function App() {
     });
   };
 
+  const examineItem = itemName => {
+    checkCooldown(() => {
+      actions.examineItem(itemName);
+    });
+  };
+
   const refresh = () => {
     checkCooldown(() => {
       actions.refresh();
@@ -213,10 +219,7 @@ function App() {
         <>
           <Cooldown secs={gameState.serverData.cooldown} />
           {/* <Cooldown secs={23} /> */}
-          <Inventory
-            gameState={gameState}
-            callbacks={{ dropItem, sellItem, examineItem: item => console.log(item) }}
-          />
+          <Inventory gameState={gameState} callbacks={{ dropItem, sellItem, examineItem }} />
           <DisplayTopRight>
             <PlayerStats gameState={gameState} />
             <RoomStats
