@@ -5,7 +5,7 @@ export const initServerData = {
   players: [],
   items: [],
   exits: [],
-  coordinates: { x: null, y: null },
+  coordinates: '',
   terrain: '',
   elevation: 0,
   name: '',
@@ -64,5 +64,5 @@ export const initRoomData = {
   terrain: '',
   elevation: 0,
   notes: [],
-  labels: []
+  label: ''
 };
