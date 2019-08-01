@@ -15,7 +15,7 @@ const DirectionalControls = styled.div`
   box-shadow: ${p => p.theme.hudShadow};
   position: absolute;
   right: 10%;
-  bottom: 15%;
+  bottom: 6%;
   z-index: 2000;
   border-radius: 50%;
   pointer-events: ${p => (p.queueRunning ? 'none' : 'auto')};
@@ -74,7 +74,7 @@ const DirectionalControls = styled.div`
 
 const ControlQueue = styled.div`
   position: absolute;
-  bottom: calc(20% + 16rem);
+  bottom: calc(10% + 16rem);
   right: calc(10% - 1rem);
   text-align: right;
   max-width: 45rem;
@@ -230,11 +230,9 @@ export default function Navigator({ gameState, callbacks, isLoading }) {
           </h2>
           <QueueItems>
             {moveQueue.items.map((m, key) => (
-              <>
-                <span key={key}>
-                  {m} <span className="step">{moveQueue.items.length - key}</span>
-                </span>
-              </>
+              <span key={key}>
+                {m} <span className="step">{moveQueue.items.length - key}</span>
+              </span>
             ))}
           </QueueItems>
           <Button
