@@ -19,11 +19,11 @@ const Styles = styled.div`
 
 const Label = styled.div`
   position: relative;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 0.85em;
+  height: 0.85em;
   background: ${p => (p.color === 'none' ? 'transparent' : p.color)};
   border-radius: 50%;
-  border: 0.3rem solid ${p => (p.color === 'none' ? '#222' : p.color)};
+  border: 0.1em solid ${p => (p.color === 'none' ? '#222' : p.color)};
   cursor: pointer;
   &:hover {
     background: transparent;
@@ -32,13 +32,13 @@ const Label = styled.div`
 
 const Picker = styled.div`
   background: rgba(255, 255, 255, 0.9);
-  padding: 1rem;
+  padding: 0.25em;
   position: absolute;
-  top: 0;
-  left: -3rem;
-  border-radius: 1rem;
+  top: -0.25em;
+  left: -1.5em;
+  border-radius: 0.25em;
   ${Label} {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25em;
     &:last-child {
       margin-bottom: 0;
     }
