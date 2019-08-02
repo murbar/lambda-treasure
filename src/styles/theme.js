@@ -44,7 +44,8 @@ const theme = {
     labelColor: colors.brown,
     currentRoomColor: colors.brown,
     currentRoomLabelColor: colors.cream,
-    focusRoomColor: colors.gold
+    focusRoomColor: colors.gold,
+    unknownConnectionColor: '#ccc'
     // focusRoomLabelColor: colors.cream
   },
   queue: {
