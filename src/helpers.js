@@ -5,7 +5,6 @@ const getOppositeOrdinal = o => {
   return opposites[o];
 };
 export const updateMapData = (mapData = {}, serverResponse, lastRoomId, thisRoomId, move) => {
-  console.log(mapData, serverResponse, lastRoomId, thisRoomId, move);
   if (thisRoomId in mapData) {
     // update last room with move
     if (lastRoomId !== thisRoomId) {
