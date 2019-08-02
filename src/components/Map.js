@@ -96,7 +96,7 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
       if (label) {
         ctx.beginPath();
         ctx.fillStyle = theme.labels[label];
-        const labelRadius = mapFeatureSizePx / 10;
+        const labelRadius = mapFeatureSizePx / 6;
         ctx.arc(x - roomRadius * 0.8, y - roomRadius * 0.8, labelRadius, 0, Math.PI * 2, true);
         ctx.fill();
       }
