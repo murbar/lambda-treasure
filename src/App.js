@@ -19,7 +19,7 @@ import DisplayTopRight from 'components/DisplayTopRight';
 import useHotKeys from 'hooks/useHotkeys';
 import useGameService from 'hooks/useGameService';
 import Loading from 'components/Loading';
-import { initGameState, mockGameData, testingMode, initRoomData } from 'config';
+import { initGameState, mockGameData, testingMode } from 'config';
 import { updateMapData } from 'helpers';
 // import secretMapData from 'secretMapData.json';
 
@@ -74,7 +74,7 @@ function App() {
       console.warn('cannot get next room ID from map data');
     }
     checkCooldown(() => {
-      actions.move(direction, nextRoomId);
+      actions.move(direction, nextRoomId === '?' ? null : nextRoomId);
     });
   };
 
@@ -254,7 +254,7 @@ function App() {
         <>
           <DisplayBottomLeft>
             <ButtonRow>
-              <Button onClick={refresh}>Refresh</Button>
+              {gameState.apiKey && <Button onClick={refresh}>Refresh</Button>}
               <SettingsModal
                 gameState={gameState}
                 callbacks={{ setApiKey, resetGame }}
