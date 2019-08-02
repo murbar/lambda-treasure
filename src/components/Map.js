@@ -52,7 +52,8 @@ const Styles = styled.div`
 function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, callbacks, theme }) {
   // zoom would be large feaature size but smaller
   const mapFeatureSizePx = 80;
-  const mapGridDimension = getMapMaxDimension(mapData) + 1;
+  // const mapGridDimension = getMapMaxDimension(mapData) + 1;
+  const mapGridDimension = 30;
   const mapSizePx = mapFeatureSizePx * mapGridDimension;
   const initFocus = { x: mapSizePx / 2, y: mapSizePx / 2 };
   const canvasRef = useRef();
@@ -102,6 +103,47 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
       }
     },
     [theme]
+  );
+
+  const drawUnknownConnections = useCallback(
+    (directions, fromX, fromY) => {
+      console.log(directions, fromX, fromY);
+      const ctx = canvasRef.current.getContext('2d');
+      const lineLength = mapFeatureSizePx / 1.5;
+      ctx.lineWidth = Math.floor(mapFeatureSizePx / 20);
+      ctx.strokeStyle = theme.map.unknownConnectionColor;
+      for (const d of directions) {
+        switch (d) {
+          case 'n?':
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(fromX, fromY - lineLength);
+            ctx.stroke();
+            break;
+          case 'e?':
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(fromX + lineLength, fromY);
+            ctx.stroke();
+            break;
+          case 's?':
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(fromX, fromY + lineLength);
+            ctx.stroke();
+            break;
+          case 'w?':
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(fromX - lineLength, fromY);
+            ctx.stroke();
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    [theme.map.unknownConnectionColor]
   );
 
   const drawConnection = useCallback(
@@ -163,7 +205,7 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
           const connections = roomConnections.current;
           const neighborId = room.exits[neighbor];
 
-          if (neighborId && neighborId !== '?') {
+          if ((neighborId || neighborId === 0) && neighborId !== '?') {
             // store connections under room with smaller id to avoid dupes
             if (neighborId < roomId) {
               const existing = neighborId in connections ? connections[neighborId] : [];
@@ -174,6 +216,12 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
               if (!existing.includes(neighborId)) existing.push(neighborId);
               connections[roomId] = existing;
             }
+          } else {
+            // store unknown neighbor
+            const existing = roomId in connections ? connections[roomId] : [];
+            const record = `${neighbor}${neighborId}`;
+            if (!existing.includes(record)) existing.push(record);
+            connections[roomId] = existing;
           }
         }
       }
@@ -196,20 +244,38 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
       const fromCoords = coords[roomId];
       for (const c of localConnections) {
         const toCoords = coords[c];
-        drawConnection(fromCoords.x, toCoords.x, fromCoords.y, toCoords.y);
+        if (typeof c === 'string' && c.includes('?')) {
+          // console.log('unknow connections for', roomId, '@', fromCoords);
+          drawUnknownConnections(localConnections, fromCoords.x, fromCoords.y);
+        } else {
+          drawConnection(fromCoords.x, toCoords.x, fromCoords.y, toCoords.y);
+        }
       }
     }
 
     // draw rooms
-
     for (const roomId in mapData) {
       const { x, y } = coords[roomId];
+      console.log(roomId, x, y);
       const isCurrentRoom = parseInt(roomId) === currentRoomId;
       const isFocusRoom = parseInt(roomId) === focusRoomId;
       const room = mapData[roomId];
       drawRoom(x, y, roomId, isCurrentRoom, isFocusRoom, room['label']);
     }
-  }, [mapData, currentRoomId, theme, focusRoomId, drawRoom, drawConnection]);
+  }, [
+    mapData,
+    currentRoomId,
+    theme,
+    focusRoomId,
+    drawRoom,
+    drawConnection,
+    drawUnknownConnections
+  ]);
+
+  useEffect(() => {
+    console.log(roomCoords.current);
+    console.log(roomConnections.current);
+  }, [roomCoords.current, roomConnections.current]);
 
   useHotKeys(
     {
