@@ -6,7 +6,8 @@ import OverlayBox from 'components/common/OverlayBox';
 
 const Styles = styled.div`
   line-height: 1.3;
-  max-width: 35rem;
+  min-width: 25rem;
+  width: 40rem;
   pointer-events: auto;
   h3 {
     margin: 0.5rem 0 0;
