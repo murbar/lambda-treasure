@@ -1,4 +1,4 @@
-export const testingMode = false;
+export const testingMode = true;
 
 export const initServerData = {
   room_id: null,
@@ -25,13 +25,11 @@ export const initServerData = {
 
 export const initGameState = {
   apiKey: null,
-  mapData: null,
   serverData: initServerData
 };
 
 export const mockGameData = {
   apiKey: 'Token df3e7b57e28f710d96f2b890f009939647bf0760',
-  mapData: null,
   serverData: {
     room_id: 5,
     title: 'Mt. Holloway',
