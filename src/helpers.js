@@ -9,8 +9,10 @@ export const updateMapData = (mapData, serverResponse, lastRoomId, thisRoomId, m
   if (thisRoomId in mapData) {
     // update last room with move
     if (lastRoomId !== thisRoomId) {
-      mapData[lastRoomId].exits[move] = thisRoomId;
-      mapData[thisRoomId].exits[getOppositeOrdinal(move)] = lastRoomId;
+      if (lastRoomId) {
+        mapData[lastRoomId].exits[move] = thisRoomId;
+        mapData[thisRoomId].exits[getOppositeOrdinal(move)] = lastRoomId;
+      }
     }
     return { ...mapData };
   } else {
@@ -30,10 +32,13 @@ export const updateMapData = (mapData, serverResponse, lastRoomId, thisRoomId, m
       terrain: serverResponse.terrain,
       elevation: serverResponse.elevation
     };
+    console.log(exits, exitsMap, room);
     mapData[thisRoomId] = room;
     if (lastRoomId !== thisRoomId) {
-      mapData[lastRoomId].exits[move] = thisRoomId;
-      mapData[thisRoomId].exits[getOppositeOrdinal(move)] = lastRoomId;
+      if (lastRoomId) {
+        mapData[lastRoomId].exits[move] = thisRoomId;
+        mapData[thisRoomId].exits[getOppositeOrdinal(move)] = lastRoomId;
+      }
     }
     return { ...mapData };
   }
