@@ -124,16 +124,17 @@ function App() {
   };
 
   const setRoomLabel = (roomId, label) => {
-    // try {
     setMapData(prev => {
-      // const room = prev[roomId]
       prev[roomId].label = label;
       return { ...prev };
     });
+  };
 
-    // } catch (error) {
-    //   console.warn
-    // }
+  const exportMapData = () => {
+    const a = document.createElement('a');
+    a.href = 'data:application/octet-stream,' + encodeURIComponent(JSON.stringify(mapData));
+    a.download = 'mapData.json';
+    a.click();
   };
 
   // decrement cool down once per second
@@ -243,7 +244,7 @@ function App() {
               />
               <SettingsModal
                 gameState={gameState}
-                callbacks={{ setApiKey, resetGame }}
+                callbacks={{ setApiKey, resetGame, exportMapData }}
                 isShowing={false}
               />
             </ButtonRow>

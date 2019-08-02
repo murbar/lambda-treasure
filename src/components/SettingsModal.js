@@ -53,6 +53,8 @@ export default function SettingsModal({ gameState, callbacks, isShowing = false 
                   onKeyPress={handleKeyPress}
                 />
               </FormField>
+              <h3>Map data</h3>
+              <Button onClick={callbacks.exportMapData}>Export</Button>
               <ButtonRow>
                 <Button onClick={save}>Save & Close</Button>
                 <Button onClick={callbacks.resetGame}>Reset Game</Button>
