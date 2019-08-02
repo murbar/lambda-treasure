@@ -15,6 +15,7 @@ const Styles = styled.div`
   display: inline-block;
   vertical-align: baseline;
   margin-left: 1rem;
+  margin-top: -0.1em;
 `;
 
 const Label = styled.div`
