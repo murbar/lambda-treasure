@@ -56,7 +56,7 @@ export const mockGameData = {
 };
 
 export const initRoomData = {
-  room_id: 0,
+  room_id: null,
   title: '',
   description: '',
   exits: {},
