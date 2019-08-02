@@ -256,7 +256,6 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
     // draw rooms
     for (const roomId in mapData) {
       const { x, y } = coords[roomId];
-      console.log(roomId, x, y);
       const isCurrentRoom = parseInt(roomId) === currentRoomId;
       const isFocusRoom = parseInt(roomId) === focusRoomId;
       const room = mapData[roomId];
@@ -271,11 +270,6 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
     drawConnection,
     drawUnknownConnections
   ]);
-
-  useEffect(() => {
-    console.log(roomCoords.current);
-    console.log(roomConnections.current);
-  }, [roomCoords.current, roomConnections.current]);
 
   useHotKeys(
     {
