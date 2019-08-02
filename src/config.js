@@ -1,4 +1,4 @@
-export const testingMode = true;
+export const testingMode = false;
 
 export const initServerData = {
   room_id: null,
