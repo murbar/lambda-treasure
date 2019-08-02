@@ -71,7 +71,7 @@ const Styles = styled.div`
     transition: all 0.25s;
   }
   &:hover {
-    background: ${p => p.theme.queue.bgColor};
+    background: ${p => p.theme.hud.blendBgColor};
     h2 {
       transform: rotate(0);
     }

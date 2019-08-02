@@ -107,7 +107,6 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
 
   const drawUnknownConnections = useCallback(
     (directions, fromX, fromY) => {
-      console.log(directions, fromX, fromY);
       const ctx = canvasRef.current.getContext('2d');
       const lineLength = mapFeatureSizePx / 1.5;
       ctx.lineWidth = Math.floor(mapFeatureSizePx / 20);
@@ -205,6 +204,9 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
           const connections = roomConnections.current;
           const neighborId = room.exits[neighbor];
 
+          // roomConnections.current = {};
+          // clear '?'
+
           if ((neighborId || neighborId === 0) && neighborId !== '?') {
             // store connections under room with smaller id to avoid dupes
             if (neighborId < roomId) {
@@ -238,6 +240,8 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
     const connections = roomConnections.current;
     const coords = roomCoords.current;
 
+    // console.log(connections);
+
     // draw connections
     for (const roomId in connections) {
       const localConnections = connections[roomId];
@@ -245,10 +249,11 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
       for (const c of localConnections) {
         const toCoords = coords[c];
         if (typeof c === 'string' && c.includes('?')) {
-          // console.log('unknow connections for', roomId, '@', fromCoords);
           drawUnknownConnections(localConnections, fromCoords.x, fromCoords.y);
         } else {
-          drawConnection(fromCoords.x, toCoords.x, fromCoords.y, toCoords.y);
+          if (fromCoords && toCoords) {
+            drawConnection(fromCoords.x, toCoords.x, fromCoords.y, toCoords.y);
+          }
         }
       }
     }
