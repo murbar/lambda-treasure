@@ -151,8 +151,8 @@ const useGameService = (apiKey, initServerData) => {
 
   useEffect(() => {
     httpService.setAuthKey(apiKey);
-    if (apiKey && !testingMode) checkRoomStatus();
-  }, [apiKey, checkRoomStatus]);
+    if (apiKey && !testingMode) refresh();
+  }, [apiKey, refresh]);
 
   return {
     gameServerData,
