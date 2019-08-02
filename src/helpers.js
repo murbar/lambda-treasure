@@ -48,37 +48,42 @@ export const updateMapData = (mapData = {}, serverResponse, lastRoomId, thisRoom
 };
 
 export const parseUploadedFileData = rawData => {
-  const jsonData = JSON.parse(rawData);
-  const mapData = {};
+  try {
+    const jsonData = JSON.parse(rawData);
+    const mapData = {};
 
-  for (const roomId in jsonData) {
-    const room = jsonData[roomId];
+    for (const roomId in jsonData) {
+      const room = jsonData[roomId];
 
-    const exitsMap = {};
-    for (const e in room.exits) {
-      const dir = e.toLowerCase();
-      if ('nesw'.includes(dir)) {
-        const to = room.exits[e];
-        if (to === '?') {
-          exitsMap[dir] = to;
-        } else if (parseInt(to)) {
-          exitsMap[dir] = parseInt(to);
+      const exitsMap = {};
+      for (const e in room.exits) {
+        const dir = e.toLowerCase();
+        if ('nesw'.includes(dir)) {
+          const to = room.exits[e];
+          if (to === '?') {
+            exitsMap[dir] = to;
+          } else if (parseInt(to)) {
+            exitsMap[dir] = parseInt(to);
+          }
         }
       }
+
+      const record = {
+        ...initRoomData,
+        room_id: room.room_id,
+        title: room.title,
+        description: room.description,
+        exits: exitsMap,
+        coordinates: room.coordinates,
+        terrain: room.terrain,
+        elevation: room.elevation
+      };
+      mapData[roomId] = record;
     }
 
-    const record = {
-      ...initRoomData,
-      room_id: room.room_id,
-      title: room.title,
-      description: room.description,
-      exits: exitsMap,
-      coordinates: room.coordinates,
-      terrain: room.terrain,
-      elevation: room.elevation
-    };
-    mapData[roomId] = record;
+    return mapData;
+  } catch (error) {
+    console.log('In parseUploadedFileData: Sorry, there was an error uploading the data.');
+    console.dir(error);
   }
-
-  return mapData;
 };

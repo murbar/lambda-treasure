@@ -36,19 +36,20 @@ export default function SettingsModal({ gameState, callbacks, isShowing = false 
   };
 
   const handleFileUpload = e => {
-    try {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = e => {
+    setStatusMessage('');
+    // let mapData;
+    const reader = new FileReader();
+    const file = e.target.files[0];
+    reader.onload = e => {
+      try {
         const mapData = parseUploadedFileData(e.target.result);
-        callbacks.importMapData(mapData);
-      };
-      reader.readAsText(file);
-      setStatusMessage('Your map data was successfully uploaded!');
-    } catch (error) {
-      setStatusMessage('Sorry, there was an error uploading the data.');
-      console.dir(error);
-    }
+        if (Object.keys(mapData).length > 0) callbacks.importMapData(mapData);
+        setStatusMessage('Your map data was successfully uploaded!');
+      } catch (error) {
+        setStatusMessage('Sorry, there was an error uploading the data.');
+      }
+    };
+    reader.readAsText(file);
   };
 
   return (
