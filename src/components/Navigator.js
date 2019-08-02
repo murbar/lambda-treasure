@@ -80,7 +80,7 @@ const ControlQueue = styled.div`
   max-width: 45rem;
   padding: 1rem;
   border-radius: 1rem;
-  background: ${p => p.theme.queue.bgColor};
+  background: ${p => p.theme.hud.blendBgColor};
   h2 {
     margin-bottom: 1rem;
   }

@@ -48,8 +48,8 @@ const theme = {
     unknownConnectionColor: '#ccc'
     // focusRoomLabelColor: colors.cream
   },
-  queue: {
-    bgColor: addAlpha(colors.cream, 0.8)
+  hud: {
+    blendBgColor: addAlpha(colors.cream, 0.8)
   },
   inventory: {
     itemBgGradient: `radial-gradient(ellipse at center, lightskyblue 0%, dodgerblue 100%);`
