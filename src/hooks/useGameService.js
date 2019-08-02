@@ -15,12 +15,19 @@ const useGameService = (apiKey, initServerData) => {
       await cb(...args);
       setIsLoading(false);
     } catch (error) {
-      console.dir(error);
-      const { data } = error.response;
-      if (data) {
-        setApiError(error.response.data);
-      } else {
-        setApiError(error.message);
+      const { data, status } = error.response;
+      const { message } = error;
+
+      if (data && 'cooldown' in data) {
+        setGameServerData(prev => ({ ...prev, cooldown: data.cooldown }));
+      }
+
+      if (status === 500) {
+        setApiError({ errors: ['Server error, check the console.'] });
+      } else if (data) {
+        setApiError(data);
+      } else if (message) {
+        setApiError({ errors: [message] });
       }
       setIsLoading(false);
     }
@@ -30,7 +37,6 @@ const useGameService = (apiKey, initServerData) => {
   const refresh = useCallback(
     requestWrapper(async () => {
       const { data } = await gameService.checkIn();
-      console.log(data);
       setGameServerData(prev => ({
         ...prev,
         ...data
@@ -38,7 +44,6 @@ const useGameService = (apiKey, initServerData) => {
 
       setTimeout(async () => {
         const { data } = await gameService.checkStatus();
-        console.log(data);
         setGameServerData(prev => ({
           ...prev,
           ...data
