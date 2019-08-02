@@ -19,9 +19,8 @@ import DisplayTopRight from 'components/DisplayTopRight';
 import useHotKeys from 'hooks/useHotkeys';
 import useGameService from 'hooks/useGameService';
 import Loading from 'components/Loading';
-import { initGameState, mockGameData, testingMode } from 'config';
+import { initGameState } from 'config';
 import { updateMapData } from 'helpers';
-// import secretMapData from 'secretMapData.json';
 
 const Styles = styled.div`
   min-height: 100%;
@@ -84,20 +83,20 @@ function App() {
     });
   };
 
-  const fakeRequest = () => {
-    checkCooldown(() => {
-      console.log('making fake request');
-    });
-    setGameState(prev => {
-      return {
-        ...prev,
-        serverData: {
-          ...prev.serverData,
-          cooldown: 5
-        }
-      };
-    });
-  };
+  // const dummyRequest = () => {
+  //   checkCooldown(() => {
+  //     console.log('making fake request');
+  //   });
+  //   setGameState(prev => {
+  //     return {
+  //       ...prev,
+  //       serverData: {
+  //         ...prev.serverData,
+  //         cooldown: 5
+  //       }
+  //     };
+  //   });
+  // };
 
   const dropItem = itemName => {
     checkCooldown(() => {
@@ -135,6 +134,10 @@ function App() {
     a.href = 'data:application/octet-stream,' + encodeURIComponent(JSON.stringify(mapData));
     a.download = 'mapData.json';
     a.click();
+  };
+
+  const importMapData = data => {
+    setMapData(data);
   };
 
   // decrement cool down once per second
@@ -205,7 +208,6 @@ function App() {
       <Header />
       <Loading isLoading={isLoading} />
       <Map
-        // mapData={secretMapData}
         mapData={mapData}
         currentRoomId={gameState.serverData.room_id}
         focusRoomId={focusRoomId}
@@ -237,14 +239,13 @@ function App() {
               <Button onClick={refresh}>Refresh</Button>
               <FindRoomModal
                 gameState={gameState}
-                // mapData={secretMapData}
                 mapData={mapData}
                 setFocusRoomId={setFocusRoomId}
                 isShowing={false}
               />
               <SettingsModal
                 gameState={gameState}
-                callbacks={{ setApiKey, resetGame, exportMapData }}
+                callbacks={{ setApiKey, resetGame, exportMapData, importMapData }}
                 isShowing={false}
               />
             </ButtonRow>
