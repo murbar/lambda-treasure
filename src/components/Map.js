@@ -12,17 +12,11 @@ const wiggle = val => {
 
 const dpr = window.devicePixelRatio || 1;
 
-const mapSizePx = '2000';
-
 const parseCoordinates = coords => {
   return coords
     .slice(1, coords.length - 1)
     .split(',')
     .map(n => parseInt(n));
-};
-
-const normalizeNum = (n, nMax, nMin) => {
-  return (n - nMin) / (nMax - nMin);
 };
 
 const getCoordsMaxMinXY = map => {
@@ -38,9 +32,9 @@ const getCoordsMaxMinXY = map => {
   return [maxX, minX, maxY, minY];
 };
 
-const scaleCenter = (val, scale, range) => {
-  const padding = ((1 - scale) / 2) * range;
-  return val * scale + padding;
+const getMapMaxDimension = map => {
+  const [maxX, minX, maxY, minY] = getCoordsMaxMinXY(map);
+  return Math.max(maxX - minX, maxY - minY, 10);
 };
 
 const Styles = styled.div`
@@ -51,16 +45,17 @@ const Styles = styled.div`
   canvas {
     z-index: -1000;
     position: absolute;
-    width: ${mapSizePx}px;
     transform: rotate(-2.5deg);
   }
 `;
 
-const initFocus = { x: mapSizePx / 2, y: mapSizePx / 2 };
-
 function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, callbacks, theme }) {
+  // zoom would be large feaature size but smaller
+  const mapFeatureSizePx = 80;
+  const mapGridDimension = getMapMaxDimension(mapData) + 1;
+  const mapSizePx = mapFeatureSizePx * mapGridDimension;
+  const initFocus = { x: mapSizePx / 2, y: mapSizePx / 2 };
   const canvasRef = useRef();
-  const [mapSize, setMapSize] = useState(mapSizePx);
   const currentRoomCoords = useRef();
   const roomCoords = useRef({});
   const roomConnections = useRef({});
@@ -71,15 +66,10 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
     if (focusCoords) setFocus(focusCoords);
   }, [focusRoomId]);
 
-  // set map size dynamically based on dimensinons of map data coords
-  // get max dimension set map size some multiple of it in pix?
-  // const [maxX, minX, maxY, minY] = getCoordsMaxMinXY(mapData);
-  // console.log(Math.max(maxX - minX, maxY - minY));
-  // or draw rooms a set distance apart (#px between each coord) and draw from focus room out, only draw as big as window
-
   const drawRoom = useCallback(
     (x, y, roomId, isCurrentRoom, isFocusRoom, label) => {
       const ctx = canvasRef.current.getContext('2d');
+
       ctx.beginPath();
       // yikes!
       ctx.fillStyle = isCurrentRoom
@@ -87,30 +77,31 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
         : isFocusRoom
         ? theme.map.focusRoomColor
         : theme.map.roomColor;
-      const roomRadius = isCurrentRoom || isFocusRoom ? mapSize / 80 : mapSize / 110;
-      ctx.arc(x, y, roomRadius, 0, Math.PI * 2, true); // Outer circle
-      ctx.shadowBlur = 0;
+      const roomRadius =
+        isCurrentRoom || isFocusRoom ? mapFeatureSizePx / 2.5 : mapFeatureSizePx / 3.25;
+      ctx.arc(x, y, roomRadius, 0, Math.PI * 2, true);
       ctx.fill();
 
       // text label
-      ctx.font = `bold ${mapSize / 100}px ${theme.font}`;
+      ctx.font = `bold ${mapFeatureSizePx / 3}px ${theme.font}`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillStyle = isCurrentRoom ? theme.map.currentRoomLabelColor : theme.map.labelColor;
       ctx.shadowBlur = 3;
       ctx.shadowColor = isCurrentRoom ? 'black' : 'white';
       ctx.fillText(roomId, x, y);
+      ctx.shadowBlur = 0;
 
       // color label
       if (label) {
         ctx.beginPath();
         ctx.fillStyle = theme.labels[label];
-        const labelRadius = mapSize / 200;
+        const labelRadius = mapFeatureSizePx / 10;
         ctx.arc(x - roomRadius * 0.8, y - roomRadius * 0.8, labelRadius, 0, Math.PI * 2, true);
         ctx.fill();
       }
     },
-    [mapSize, theme]
+    [theme]
   );
 
   const drawConnection = useCallback(
@@ -119,13 +110,14 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
       ctx.beginPath();
       ctx.moveTo(fromX, toX);
       ctx.lineTo(fromY, toY);
-      ctx.lineWidth = 4;
+      ctx.lineWidth = Math.floor(mapFeatureSizePx / 20);
       ctx.strokeStyle = theme.map.roomColor;
       ctx.stroke();
     },
     [theme.map.roomColor]
   );
 
+  // setup canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -141,56 +133,54 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
 
   // get coords & build connections
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const WIDTH = canvas.width;
-    const HEIGHT = canvas.height;
     const [maxX, minX, maxY, minY] = getCoordsMaxMinXY(mapData);
 
     for (let roomId in mapData) {
-      roomId = parseInt(roomId);
-      const room = mapData[roomId];
+      if (roomId || roomId === 0) {
+        roomId = parseInt(roomId);
+        const room = mapData[roomId];
 
-      // coords
-      const [rawX, rawY] = parseCoordinates(room.coordinates);
-      const [xNorm, yNorm] = [
-        (normalizeNum(rawX, maxX, minX) * WIDTH) / dpr,
-        // 0, 0 is at bottom, left of grid
-        // fix y values (1 - y)
-        ((1 - normalizeNum(rawY, maxY, minY)) * HEIGHT) / dpr
-      ];
-      const scale = 0.9;
-      const xScaled = Math.ceil(scaleCenter(xNorm, scale, WIDTH / dpr));
-      const yScaled = Math.ceil(scaleCenter(yNorm, scale, HEIGHT / dpr));
-      const coords = { x: xScaled + wiggle(4), y: yScaled + wiggle(4) };
-      roomCoords.current[roomId] = coords;
+        // coords
+        const [rawX, rawY] = parseCoordinates(room.coordinates);
+        const constCoordAdjustment = Math.min(minX, minY);
+        const adjustedX =
+          (rawX - constCoordAdjustment) * mapFeatureSizePx + 0.75 * mapFeatureSizePx;
+        // y coord is inverted
+        const adjustedY =
+          mapSizePx - ((rawY - constCoordAdjustment) * mapFeatureSizePx + 0.75 * mapFeatureSizePx);
+        const [x, y] = [adjustedX, adjustedY].map(c => Math.ceil(c)).map(c => c + wiggle(4));
+        const coords = { x, y };
 
-      const isCurrentRoom = parseInt(roomId) === currentRoomId;
-      if (isCurrentRoom) {
-        setFocus(coords);
-        currentRoomCoords.current = coords;
-      }
+        roomCoords.current[roomId] = coords;
+        const isCurrentRoom = parseInt(roomId) === currentRoomId;
+        if (isCurrentRoom) {
+          setFocus(coords);
+          currentRoomCoords.current = coords;
+        }
 
-      // connections
-      for (const neighbor in room.exits) {
-        const connections = roomConnections.current;
-        const neighborId = room.exits[neighbor];
+        // connections
+        for (const neighbor in room.exits) {
+          const connections = roomConnections.current;
+          const neighborId = room.exits[neighbor];
 
-        if (neighborId !== '?') {
-          // store connections under room with smaller id to avoid dupes
-          if (neighborId < roomId) {
-            const existing = neighborId in connections ? connections[neighborId] : [];
-            if (!existing.includes(roomId)) existing.push(roomId);
-            connections[neighborId] = existing;
-          } else {
-            const existing = roomId in connections ? connections[roomId] : [];
-            if (!existing.includes(neighborId)) existing.push(neighborId);
-            connections[roomId] = existing;
+          if (neighborId && neighborId !== '?') {
+            // store connections under room with smaller id to avoid dupes
+            if (neighborId < roomId) {
+              const existing = neighborId in connections ? connections[neighborId] : [];
+              if (!existing.includes(roomId)) existing.push(roomId);
+              connections[neighborId] = existing;
+            } else {
+              const existing = roomId in connections ? connections[roomId] : [];
+              if (!existing.includes(neighborId)) existing.push(neighborId);
+              connections[roomId] = existing;
+            }
           }
         }
       }
     }
-  }, [currentRoomId, mapData]);
+  }, [currentRoomId, mapData, mapSizePx]);
 
+  // draw features
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -211,17 +201,13 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
     }
 
     // draw rooms
-    // console.log('drawing rooms');
+
     for (const roomId in mapData) {
       const { x, y } = coords[roomId];
       const isCurrentRoom = parseInt(roomId) === currentRoomId;
       const isFocusRoom = parseInt(roomId) === focusRoomId;
       const room = mapData[roomId];
-      if ('label' in room) {
-        drawRoom(x, y, roomId, isCurrentRoom, isFocusRoom, room['label']);
-      } else {
-        drawRoom(x, y, roomId, isCurrentRoom, isFocusRoom);
-      }
+      drawRoom(x, y, roomId, isCurrentRoom, isFocusRoom, room['label']);
     }
   }, [mapData, currentRoomId, theme, focusRoomId, drawRoom, drawConnection]);
 
@@ -292,7 +278,11 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
       onMouseUp={preventClickDefault}
       onWheel={handleWheel}
     >
-      <animated.canvas id="grid-canvas" ref={canvasRef} style={moveSpring} />
+      <animated.canvas
+        id="grid-canvas"
+        ref={canvasRef}
+        style={{ ...moveSpring, width: `${mapSizePx}px` }}
+      />
       <Vignette />
       <Navigator
         gameState={gameState}
