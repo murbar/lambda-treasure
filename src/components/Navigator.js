@@ -235,12 +235,7 @@ export default function Navigator({ gameState, callbacks, isLoading }) {
               </span>
             ))}
           </QueueItems>
-          <Button
-            onClick={() => setQueueRunning(true)}
-            disabled={gameState.serverData.cooldown > 0}
-          >
-            Go
-          </Button>
+          <Button onClick={() => setQueueRunning(true)}>Go</Button>
           <Button
             onClick={() => {
               clearTimeout(queueTimer.current);
