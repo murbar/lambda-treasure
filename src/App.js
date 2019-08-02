@@ -217,7 +217,6 @@ function App() {
       />
       {apiError && <ApiError message={apiError.errors[0]} />}
       {!gameState.apiKey && <ApiError message="No API key, update your settings" />}
-      {/* {true && <Settings gameState={gameState} callbacks={{ setApiKey, resetGame }} />} */}
       {roomLoaded && (
         <>
           <Cooldown secs={gameState.serverData.cooldown} />
@@ -234,7 +233,7 @@ function App() {
           </DisplayTopRight>
           <DisplayBottomLeft>
             {/* <GameErrors messages={[`No API key, press 'z' to show settings`, 'Another error!']} /> */}
-            <GameErrors messages={gameState.serverData.errors} />
+            {/* <GameErrors messages={gameState.serverData.errors} /> */}
             <ButtonRow>
               <Button onClick={refresh}>Refresh</Button>
               <FindRoomModal
