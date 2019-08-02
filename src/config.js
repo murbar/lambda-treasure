@@ -1,3 +1,5 @@
+export const testingMode = true;
+
 export const initServerData = {
   room_id: null,
   title: '',
@@ -26,8 +28,6 @@ export const initGameState = {
   mapData: null,
   serverData: initServerData
 };
-
-export const testingMode = true;
 
 export const mockGameData = {
   apiKey: 'Token df3e7b57e28f710d96f2b890f009939647bf0760',
