@@ -29,12 +29,13 @@ const getCoordsMaxMinXY = map => {
     if (y < minY) minY = y;
     if (y > maxY) maxY = y;
   }
-  return [maxX, minX, maxY, minY];
+  return { maxX, minX, maxY, minY };
 };
 
 const getMapMaxDimension = map => {
-  const [maxX, minX, maxY, minY] = getCoordsMaxMinXY(map);
-  return Math.max(maxX - minX, maxY - minY, 10);
+  const { maxX, minX, maxY, minY } = getCoordsMaxMinXY(map);
+  // our map is ~30x30, more complex logic would be needed to center partially explored map on smaller canvas, this works fine
+  return Math.max(maxX - minX, maxY - minY, 30);
 };
 
 const Styles = styled.div`
@@ -50,16 +51,14 @@ const Styles = styled.div`
 `;
 
 function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, callbacks, theme }) {
-  // zoom would be large feaature size but smaller
+  // zoom would be large feature size but smaller
   const mapFeatureSizePx = 80;
-  // const mapGridDimension = getMapMaxDimension(mapData) + 1;
-  const mapGridDimension = 30;
+  const mapGridDimension = getMapMaxDimension(mapData);
   const mapSizePx = mapFeatureSizePx * mapGridDimension;
   const initFocus = { x: mapSizePx / 2, y: mapSizePx / 2 };
   const canvasRef = useRef();
   const currentRoomCoords = useRef();
   const roomCoords = useRef({});
-  const roomConnections = useRef({});
   const [focus, setFocus] = useState(initFocus);
 
   useEffect(() => {
@@ -105,42 +104,24 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
     [theme]
   );
 
-  const drawUnknownConnections = useCallback(
-    (directions, fromX, fromY) => {
+  const drawUnknownConnection = useCallback(
+    (direction, fromX, fromY) => {
       const ctx = canvasRef.current.getContext('2d');
-      const lineLength = mapFeatureSizePx / 1.5;
-      ctx.lineWidth = Math.floor(mapFeatureSizePx / 20);
+      const lineLength = mapFeatureSizePx / 1.8;
+      ctx.lineWidth = Math.floor(mapFeatureSizePx / 5);
       ctx.strokeStyle = theme.map.unknownConnectionColor;
-      for (const d of directions) {
-        switch (d) {
-          case 'n?':
-            ctx.beginPath();
-            ctx.moveTo(fromX, fromY);
-            ctx.lineTo(fromX, fromY - lineLength);
-            ctx.stroke();
-            break;
-          case 'e?':
-            ctx.beginPath();
-            ctx.moveTo(fromX, fromY);
-            ctx.lineTo(fromX + lineLength, fromY);
-            ctx.stroke();
-            break;
-          case 's?':
-            ctx.beginPath();
-            ctx.moveTo(fromX, fromY);
-            ctx.lineTo(fromX, fromY + lineLength);
-            ctx.stroke();
-            break;
-          case 'w?':
-            ctx.beginPath();
-            ctx.moveTo(fromX, fromY);
-            ctx.lineTo(fromX - lineLength, fromY);
-            ctx.stroke();
-            break;
-          default:
-            break;
-        }
-      }
+
+      const toCoords = {
+        n: { x: fromX, y: fromY - lineLength },
+        e: { x: fromX + lineLength, y: fromY },
+        s: { x: fromX, y: fromY + lineLength },
+        w: { x: fromX - lineLength, y: fromY }
+      };
+
+      ctx.beginPath();
+      ctx.moveTo(fromX, fromY);
+      ctx.lineTo(toCoords[direction].x, toCoords[direction].y);
+      ctx.stroke();
     },
     [theme.map.unknownConnectionColor]
   );
@@ -151,7 +132,7 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
       ctx.beginPath();
       ctx.moveTo(fromX, toX);
       ctx.lineTo(fromY, toY);
-      ctx.lineWidth = Math.floor(mapFeatureSizePx / 20);
+      ctx.lineWidth = Math.floor(mapFeatureSizePx / 5);
       ctx.strokeStyle = theme.map.roomColor;
       ctx.stroke();
     },
@@ -167,14 +148,11 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
     canvas.width = rect.width * dpr;
     canvas.height = canvas.width;
     ctx.scale(dpr, dpr);
-
-    // ctx.fillStyle = 'white';
-    // ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
 
-  // get coords & build connections
+  // get coords
   useEffect(() => {
-    const [maxX, minX, maxY, minY] = getCoordsMaxMinXY(mapData);
+    const { minX, minY } = getCoordsMaxMinXY(mapData);
 
     for (let roomId in mapData) {
       if (roomId || roomId === 0) {
@@ -198,34 +176,6 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
           setFocus(coords);
           currentRoomCoords.current = coords;
         }
-
-        // connections
-        for (const neighbor in room.exits) {
-          const connections = roomConnections.current;
-          const neighborId = room.exits[neighbor];
-
-          // roomConnections.current = {};
-          // clear '?'
-
-          if ((neighborId || neighborId === 0) && neighborId !== '?') {
-            // store connections under room with smaller id to avoid dupes
-            if (neighborId < roomId) {
-              const existing = neighborId in connections ? connections[neighborId] : [];
-              if (!existing.includes(roomId)) existing.push(roomId);
-              connections[neighborId] = existing;
-            } else {
-              const existing = roomId in connections ? connections[roomId] : [];
-              if (!existing.includes(neighborId)) existing.push(neighborId);
-              connections[roomId] = existing;
-            }
-          } else {
-            // store unknown neighbor
-            const existing = roomId in connections ? connections[roomId] : [];
-            const record = `${neighbor}${neighborId}`;
-            if (!existing.includes(record)) existing.push(record);
-            connections[roomId] = existing;
-          }
-        }
       }
     }
   }, [currentRoomId, mapData, mapSizePx]);
@@ -237,20 +187,17 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const connections = roomConnections.current;
-    const coords = roomCoords.current;
-
-    // console.log(connections);
-
     // draw connections
-    for (const roomId in connections) {
-      const localConnections = connections[roomId];
+    const coords = roomCoords.current;
+    for (const roomId in mapData) {
+      const localConnections = mapData[roomId]['exits'];
       const fromCoords = coords[roomId];
-      for (const c of localConnections) {
-        const toCoords = coords[c];
-        if (typeof c === 'string' && c.includes('?')) {
-          drawUnknownConnections(localConnections, fromCoords.x, fromCoords.y);
+      for (const direction in localConnections) {
+        const dest = localConnections[direction];
+        if (dest === '?') {
+          drawUnknownConnection(direction, fromCoords.x, fromCoords.y);
         } else {
+          const toCoords = coords[dest];
           if (fromCoords && toCoords) {
             drawConnection(fromCoords.x, toCoords.x, fromCoords.y, toCoords.y);
           }
@@ -266,15 +213,7 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
       const room = mapData[roomId];
       drawRoom(x, y, roomId, isCurrentRoom, isFocusRoom, room['label']);
     }
-  }, [
-    mapData,
-    currentRoomId,
-    theme,
-    focusRoomId,
-    drawRoom,
-    drawConnection,
-    drawUnknownConnections
-  ]);
+  }, [mapData, currentRoomId, theme, focusRoomId, drawRoom, drawConnection, drawUnknownConnection]);
 
   useHotKeys(
     {
