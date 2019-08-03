@@ -1,6 +1,8 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
-export default styled.div`
+const Styles = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -13,3 +15,7 @@ export default styled.div`
   background: rgba(0, 0, 0, 0.4);
   pointer-events: auto;
 `;
+
+export default function FullScreenModal({ children }) {
+  return ReactDOM.createPortal(<Styles>{children}</Styles>, document.querySelector('#modal'));
+}
