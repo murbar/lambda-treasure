@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import ReactGA from 'react-ga';
 import useLocalStorageState from 'hooks/useLocalStorageState';
 import Header from 'components/Header';
 import Map from 'components/Map';
@@ -190,6 +191,11 @@ function App() {
       }));
     }
   }, [apiError, setGameState]);
+
+  useEffect(() => {
+    ReactGA.initialize('UA-140727716-4');
+    ReactGA.pageview('/');
+  }, []);
 
   // selectively activate hotkeys when inputs not in focus
   useHotKeys({
