@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const labelsMap = {
@@ -61,7 +61,7 @@ export default function RoomLabel({ label = null, setLabel }) {
 
   return (
     <Styles>
-      {label ? (
+      {labelChoice && labelChoice !== '' ? (
         <Label
           color={labelsMap[labelChoice].color}
           title={`${labelsMap[labelChoice].name} label`}
