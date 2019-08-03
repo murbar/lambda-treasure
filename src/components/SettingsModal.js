@@ -60,7 +60,7 @@ export default function SettingsModal({ gameState, callbacks, isShowing = false 
           <OverlayBox>
             <Styles>
               <h2>Settings</h2>
-              <p>Press 'z' to hide settings</p>
+              {/* <p>Press 'z' to hide settings</p> */}
               <h3>API key</h3>
               <FormField>
                 <label htmlFor="api-key">Key</label>
