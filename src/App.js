@@ -27,7 +27,7 @@ const Styles = styled.div`
 `;
 
 function App() {
-  const [gameState, setGameState] = useLocalStorageState('GAME_STATE', initGameState);
+  const [gameState, setGameState] = useLocalStorageState('GAME_STATE_V_08032019', initGameState);
   const [mapData, setMapData] = useLocalStorageState('MAP_DATA', {});
   const { gameServerData, isLoading, apiError, actions } = useGameService(
     gameState.apiKey,
@@ -193,7 +193,7 @@ function App() {
 
   // selectively activate hotkeys when inputs not in focus
   useHotKeys({
-    F13: () => console.log(gameState)
+    l: () => console.log(gameState)
     // ArrowUp: () => move('n'),
     // ArrowRight: () => move('e'),
     // ArrowDown: () => move('s'),
