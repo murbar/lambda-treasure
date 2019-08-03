@@ -222,7 +222,9 @@ function App() {
         callbacks={{ move }}
       />
       {apiError && <ApiError message={apiError.errors[0]} />}
-      {!gameState.apiKey && <ApiError message="No API key, update your settings" />}
+      {!gameState.apiKey && (
+        <ApiError message="Welcome! Add your API key in Settings to get started." />
+      )}
       {roomLoaded && (
         <>
           <Cooldown secs={gameState.serverData.cooldown} />
