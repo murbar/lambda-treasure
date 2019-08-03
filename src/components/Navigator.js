@@ -16,7 +16,7 @@ const DirectionalControls = styled.div`
   position: absolute;
   right: 10%;
   bottom: 6%;
-  z-index: 2000;
+  z-index: 100;
   border-radius: 50%;
   pointer-events: ${p => (p.queueRunning ? 'none' : 'auto')};
   svg {
