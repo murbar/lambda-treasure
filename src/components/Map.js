@@ -7,7 +7,7 @@ import useHotKeys from 'hooks/useHotkeys';
 
 const wiggle = val => {
   const [min, max] = [-val, val];
-  return Math.round(Math.random() * (max - min) + min);
+  return Math.random() * (max - min) + min;
 };
 
 const dpr = window.devicePixelRatio || 1;
@@ -36,6 +36,40 @@ const getMapMaxDimension = map => {
   const { maxX, minX, maxY, minY } = getCoordsMaxMinXY(map);
   // our map is ~30x30, more complex logic would be needed to center partially explored map on smaller canvas, this works fine
   return Math.max(maxX - minX, maxY - minY, 30);
+};
+
+const roundedRect = (ctx, x, y, width, height, radius, fill, stroke) => {
+  if (typeof stroke == 'undefined') {
+    stroke = true;
+  }
+  if (typeof radius === 'undefined') {
+    radius = 5;
+  }
+  if (typeof radius === 'number') {
+    radius = { tl: radius, tr: radius, br: radius, bl: radius };
+  } else {
+    var defaultRadius = { tl: 0, tr: 0, br: 0, bl: 0 };
+    for (var side in defaultRadius) {
+      radius[side] = radius[side] || defaultRadius[side];
+    }
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + width - radius.tr, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+  ctx.lineTo(x + width, y + height - radius.br);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+  ctx.lineTo(x + radius.bl, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+  ctx.lineTo(x, y + radius.tl);
+  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+  ctx.closePath();
+  if (fill) {
+    ctx.fill();
+  }
+  if (stroke) {
+    ctx.stroke();
+  }
 };
 
 const Styles = styled.div`
@@ -79,8 +113,11 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
         : theme.map.roomColor;
       const roomRadius =
         isCurrentRoom || isFocusRoom ? mapFeatureSizePx / 2.5 : mapFeatureSizePx / 3.25;
-      ctx.arc(x, y, roomRadius, 0, Math.PI * 2, true);
-      ctx.fill();
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(wiggle(0.1));
+      ctx.fillRect(0 - roomRadius, 0 - roomRadius, roomRadius * 2, roomRadius * 2);
+      ctx.restore();
 
       // text label
       ctx.font = `bold ${mapFeatureSizePx / 3}px ${theme.font}`;
@@ -167,7 +204,9 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
         // y coord is inverted
         const adjustedY =
           mapSizePx - ((rawY - constCoordAdjustment) * mapFeatureSizePx + 0.75 * mapFeatureSizePx);
-        const [x, y] = [adjustedX, adjustedY].map(c => Math.ceil(c)).map(c => c + wiggle(4));
+        const [x, y] = [adjustedX, adjustedY]
+          .map(c => Math.ceil(c))
+          .map(c => c + Math.round(wiggle(4)));
         const coords = { x, y };
 
         roomCoords.current[roomId] = coords;
