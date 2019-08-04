@@ -38,10 +38,7 @@ const getMapMaxDimension = map => {
   return Math.max(maxX - minX, maxY - minY, 30);
 };
 
-const roundedRect = (ctx, x, y, width, height, radius, fill, stroke) => {
-  if (typeof stroke == 'undefined') {
-    stroke = true;
-  }
+const roundedRect = (ctx, x, y, width, height, radius, fillStyle) => {
   if (typeof radius === 'undefined') {
     radius = 5;
   }
@@ -64,12 +61,8 @@ const roundedRect = (ctx, x, y, width, height, radius, fill, stroke) => {
   ctx.lineTo(x, y + radius.tl);
   ctx.quadraticCurveTo(x, y, x + radius.tl, y);
   ctx.closePath();
-  if (fill) {
-    ctx.fill();
-  }
-  if (stroke) {
-    ctx.stroke();
-  }
+  ctx.fillStyle = fillStyle;
+  ctx.fill();
 };
 
 const Styles = styled.div`
@@ -106,7 +99,7 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
 
       ctx.beginPath();
       // yikes!
-      ctx.fillStyle = isCurrentRoom
+      const fillStyle = isCurrentRoom
         ? theme.map.currentRoomColor
         : isFocusRoom
         ? theme.map.focusRoomColor
@@ -116,7 +109,9 @@ function Map({ mapData, currentRoomId = 0, focusRoomId, gameState, isLoading, ca
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(wiggle(0.1));
-      ctx.fillRect(0 - roomRadius, 0 - roomRadius, roomRadius * 2, roomRadius * 2);
+      const [pos, size] = [0 - roomRadius, roomRadius * 2];
+      roundedRect(ctx, pos, pos, size, size, 4, fillStyle);
+      // ctx.fillRect(0 - roomRadius, 0 - roomRadius, roomRadius * 2, roomRadius * 2);
       ctx.restore();
 
       // text label
